@@ -1,0 +1,249 @@
+You might have trouble installing on the first try because of failed bootloader write, trying again solves it
+	I don't know if it's relevant, but 2nd time I tried, I marked the volume I wanted to install into (it had a checkbox))
+
+Audio
+=====
+Lower sound from 100% to 30%
+
+Go to Sound:
+    disable sound for "Tiling and snapping windows"
+	enable "Opening new windows"
+	enable "Showing notifications"
+
+Display
+=======
+Go to Display:
+    First choose the primary display and apply
+    Then sort the screens as needed
+    For some reason there's an offset that's solved when the right and top monitors are redefined to resolution "1680 x 1050 (16:10)"
+    Change refresh rate of the ASUS screen
+
+GUI (mostly ricing)
+===
+Go to Welcome > First Steps
+    Set night mode and default color
+
+Go to Timeshift -> create a snapshots schedule at boot, set 10 snapshots to keep ( TODO: see if it snapshots packages and OS preferences )
+    Create a snapshot (takes a split-second) 
+
+Right-click > Customize > Desktop Settings -> enable everything
+
+Go to System Settings >
+    Preferences > Panel
+        Add a Panel to the top screen (will be used to list windows - the "navigation" screen)
+            Right-click the panel > Applets
+                -> add "Menu"
+                -> add "Scale"
+                -> add "Grouped Window list"
+                right-click the panel and activate edit-mode to drag items to the left if necessary
+            Right-click the panel > Preferences > Configure -> make it show all running windows
+            Right-click > System Settings -> pin to the Panel
+            Lookup "Timeshift" in the Menu of this Panel and pin it
+        On the panel of the main screen: (will be used to manage operations and access misc stuff)
+            Remove "show desktop"
+            activate edit mode
+            right-click > Applets
+                -> "Grouped window list", "Menu", "Favorites", "Calendar", "Keyboard", "Network Manager", "Notifications", "Power Manager", "Printers", "Sound", "XApp Status Applet" should already exist
+                -> Add "Removable drives
+                -> optional: add "expo" to manage several desktops... probably not
+                -> optional: in Download -> add "QRedshift" to make the screen warmer at night
+                -> optional: in Download -> see what other things could interest you
+           right-click the Calendar (bottom-right corner) > configure > Use a custom date format -> use this format: "%Y-%m-%e%n(%a)%X" (or maybe skip the %a (day name, shortened))
+    
+    Right-click any icon on the Panel (taskbar) (while not in Panel Edit mode) > Applet Preferences > Configure...
+        Mouse wheel scroll action -> Cycle windows
+        Left click action -> Cycle windows
+        (do the following once it'll work properly newly-added instances through mouse-wheel click don't appear in the icon's window list) Middle click action -> Launch new app instance
+
+    Preferences > Hot Corners -> enable bottom-right corner and set it to show the desktop after 200ms delay (it's not the most convenient corner, but consistent for Windows users)
+    
+    Preferences > Window Tiling -> enable maximizing when dragging to top edge (consistent for Windows users)
+
+    Preferences > General -> check if it's acceptable. I arbitrarily set the RAM limit to 4096.
+    
+    Preferences > Notifications ->
+        enable
+        remove after timeout
+        not at bottom
+        OSD size: Small. 
+
+    Preferences > Languages
+        -> set Language to "English, United States"
+        -> Apply System-Wide
+
+    Preferences > Windows > Behavior ->
+        have Window focus mode set to either "Click" or "Sloppy" ("Mouse" won't let you launch a terminal and type on it without the cursor on it)
+        Activate "Bring windows which require attention to the current workspace" 
+        set "Special key to move and resize windows" to "Super" (to allow alt-clicking in various IDEs)
+
+    Hardware > Keyboard > Shortcuts
+        > System > Lock screen -> Set CTRL+ESC instead of CTRL+ALT+L (which is PyCharm's "sort this page" shortcut)
+
+    Hardware > Keyboard > Layouts -> add your extra languages
+        -> Options... > Switching to another layout -> choose a keyboard shortcut (maybe ALT+SHIFT for consistency with Windows)
+        if you want to input Kanji, go to Preferences > Input Method
+
+    Hardware > Power Management -> see that the settings are acceptable
+    
+
+Set Xed (text editor) to use a different theme, because its .sh editor is barely readable 
+    Of the default options I find "Oblivion" or "Solarized Dark" to be the most tolerable
+    
+
+Template: Add a new shell file option to right-click:
+    bs="$HOME/Templates/bash_script.sh"
+    touch "$bs" && chmod ug+x "$bs" && printf '#!/bin/bash\n\n' > "$bs"
+Template: Add a new text file (non-executable) option to right-click:
+    pt="$HOME/Templates/plain_text.txt"
+    touch "$pt" && chmod 664 "$pt"
+
+
+Check that you have internet connection
+    If not, disconnect and reconnect; it might solve the problem
+Go to Firewall -> enable it (still no rules, but at least it'll block incoming for now)
+    Deny incoming
+    See that you can still browse the internet    
+
+
+Go to Timeshift -> create a snapshots
+Open Terminal and run a system update (will take a while):
+sudo apt update -y
+sudo apt upgrade -y
+sudo shutdown -r now
+
+
+installations:
+
+follow QEMU installation file's instructions
+
+
+
+
+
+Run the apt_installations.sh file
+
+
+
+
+
+# not working well:   enable session-saving: run 'dconf-editor' and go to org > cinnamon > cinnamon-session -> turn on 'auto-save-session'
+
+
+With the new Nvidia drivers installed, configure display layout and refresh rates:
+    NVIDIA Settings > X Server Display Configuration
+        Set layout
+        change the resolution from auto, so that 2nd field becomes editable for frequency
+        Save to a file (can't save to the default one - nvidia's driver won't write nor read it):
+            Click "Save to X Configuration file"
+            Click "Show Preview" copy the contents, save somewhere
+            edit "/etc/X11/xinit/xinitrc" (or in some other systems could be in $HOME) to include the line "nvidia-settings --load-config-only &" before the only line that's already in there (a source of X11 session)
+    maybe you could just "help" it by running the screen settings as sudo ( sudo nvidia-settings ) 
+        maybe you need to chown the file it's trying to access...
+    Make sure that the Startup Application "NVIDIA X Server Settings" doesn't have this command:    sudo -c '/usr/bin/nvidia-settings --load-config-only'
+        if it does, simplify it to:    /usr/bin/nvidia-settings --load-config-only
+
+Enable starting a terminal at current window (works for nemo file manager):
+    run: mkdir -p "${HOME}/.gnome2/accels"
+    run: touch "${HOME}/.gnome2/accels/nemo"
+    reset cinnamon by logging out/in (CTRL+ALT+BACKSPACE)
+        the created file will now have many commented configuration lines
+    uncomment and set key for the line that has "OpenInTerminal". run:
+        keyshortcut='<Primary><Shift>t'  # only line you might want to change, the rest stay the same  # "Ctrl" is "Primary"
+        original_line='; (gtk_accel_path "<Actions>/DirViewActions/OpenInTerminal" "")'
+        replace_line='(gtk_accel_path "<Actions>/DirViewActions/OpenInTerminal" "'$keyshortcut'")'
+        sed -i "s|${original_line}|${replace_line}|g" "${HOME}/.gnome2/accels/nemo"  # replace string
+    reset cinnamon again by logging out/in (CTRL+ALT+BACKSPACE)
+
+
+update the /etc/bash.bashrc file with own baschrc definitions (or reference)
+
+
+The GUI in 'System Settings > Hardware > Disks' is neat. Remember to use it in the future if you need device-id or status.
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODO
+setup things through systemd (init system)
+check xorg display server options
+
+
+TODO
+go over the ungoogling-folder and install some of those things
+
+
+TODO
+Go to System Settings > Preferences > Preferred Applications
+
+Go to System Settings > Preferences > Startup Applications -> see that everything there makes sense to launch at startup
+
+
+TODO
+go over programs in X/programs_and_images  and see that no type of program is missing from this OS (like 3D prints editor or DAC drivers or VR software...)
+
+
+
+Unresolved: noises before startup (from DAC?), when the logo just appears  - probably from DAC, maybe JDS's drivers would solve that
+
+Unresolved: reading "SMART" microsoft (collection of) disks
+Reading NTFS Dynamic disks: (source: https://askubuntu.com/questions/869770/how-to-mount-dynamic-disks-partition-on-ubuntu )
+$ sudo apt-get install ldmtool
+
+Unresolved: install programs like in old OSs, install basic stuff like image-viewer, go over scripts in X
+
+Unresolved: make the OS open txt file in editor, not ask if it needs to run
+
+
+
+Not sure: update and upgrade everything
+
+# Careful, this'll take a while
+
+
+
+# TODO - move this somewhere else ?
+
+
+Process Manager:
+    System Monitor
+    htop
+Resource Management
+    Disks [gnome-disks ?]
+Editor / viewer:
+    OnlyOffice (Microsoft Office documents)
+    Document Viewer (documents, including PDF)
+    Visual Studio Code (Text Editor)
+    Sublime Text (Text Editor)
+    Xed (Text Editor)
+Browser:
+    Brave
+    LibreWolf
+Media Player:
+    celluloid [formerly mpv] (videos)
+
+
+# TODO - move this somewhere else
+
+Print hardware specs:
+    sudo lshw
+Temperatures print:
+    watch -n 2 sensors     (terminal CPU self updating report (every 2 seconds)
+    watch -n 2 nvidia-smi     (terminal GPU self updating report (every 2 seconds)
+
+
+disks_info
+compute_info
+list_programs
+list_commands
+
+
+
