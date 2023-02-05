@@ -76,6 +76,8 @@ Go to System Settings >
         Activate "Bring windows which require attention to the current workspace" 
         set "Special key to move and resize windows" to "Super" (to allow alt-clicking in various IDEs)
 
+    Preferences > Screensaver -> toggle off "Lock the computer after screensaver starts"
+
     Hardware > Keyboard > Shortcuts
         > System > Lock screen -> Set CTRL+ESC instead of CTRL+ALT+L (which is PyCharm's "sort this page" shortcut)
 

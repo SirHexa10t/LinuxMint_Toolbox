@@ -1,84 +1,12 @@
 #!/bin/bash
 
-distro=jammy
-
-
-end_messages=()
-
-
-# The following colors are in bright colors, assuming you're a man of culture who uses a dark terminal. If not, remove the "\033[1m\" prefix in those functions
-# echoes in red. Just an aesthetic thing.
-function recho () {
-	echo -e "\033[1m\033[31m${@}\033[0m"
-}
-# echoes in green. Just an aesthetic thing.
-function gecho () {
-	echo -e "\033[1m\033[32m${@}\033[0m"
-}
-# echoes in blue. Just an aesthetic thing.
-function becho () {
-	echo -e "\033[1m\033[34m${@}\033[0m"
-}
-
-
-# use like so: install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
-function install_targz_in_opt () {
-	app_name='' ; app_location='', inner_executable=''  # defaults, and clearing (in case they're set)
-	while [[ $# -gt 0 ]]; do
-		case "$1" in
-		'--url')
-			url="$2"
-			shift 2
-			continue
-		;;
-		'--app_name')
-			app_name="$2"
-			shift 2
-			continue
-		;;
-		'--app_location')
-			app_location="$2"
-			shift 2
-			continue
-		;;
-		'--inner_executable')
-			inner_executable="$2"
-			shift 2
-			continue
-		;;
-		*)
-			echo "I don't know how to handle $1"
-			return
-		;;
-		esac
-	done
-
-	install_dir_full="${app_location}/${app_name}"
-
-	becho "downloading: ${url}/${app_name}.tar.gz"
-	wget "${url}/${app_name}.tar.gz"
-
-	becho "extracting into: ${install_dir_full}/${app_name}"
-	sudo mkdir -p "$install_dir_full"
-	sudo tar xvzf "$app_name.tar.gz" -C "$install_dir_full" --strip-components=1  # strip out the folder that contains the data
-
-	becho "Cleaning up downloaded tar file"
-	rm "$app_name.tar.gz"  # clean up the tar.gz file
-
-	# if provided an inner execution file
-	if [ -n "$inner_executable" ]; then
-	exe_path="${install_dir_full}/${inner_executable}"
-	sudo chmod u+x "$exe_path"
-	ln -s "$exe_path" "$HOME/Desktop/$app_name"  # Create a desktop shortcut for PyCharm
-	fi
-}
-
-
-
+# source the nearby (file in same dir) basic installation shortcuts
+source "$(dirname $0)/install_functions.sh"
 
 
 #################################################################################### system and os utilities
 sudo apt update
+sudo apt install software-properties-common apt-transport-https wget ca-certificates gnupg2
 
 # swap is not supported in BTRFS.
 # # set up swap (Always allocate a bit of memory for swapfile. Even if you have a lot of memory - it's useful when there's a memory leak, and some program access it regardless.)
@@ -95,6 +23,9 @@ sudo apt-get install ppa-purge  -y
 # nala - apt, but prettier
 sudo apt install nala -y
 
+# .deb files handler
+sudo apt install gdebi -y
+
 # a terminal pane-arranger and session keeper
 sudo apt install tmux -y
 
@@ -106,32 +37,52 @@ sudo apt install dirmngr
 
 # Encryption of personal data
 sudo apt install keepassxc -y
-
-# virtual machine manager
-end_messages+=("QEMU setup isn't covered by this script because it's too hands-on, and includes a restart in the middle.")
-
-# disk capacity check
+# source the nearby (file in same dir) basic installation shortcuts
+source "$(dirname $0)/install_functions.sh"
+heck
 sudo apt install f3 -y
 
 # VPN (NordVPN)
 # sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh)
 # rm nordvpn-release*  # their online installation script is great, but (sometimes?) leaves behind this file.
 
-# service for accessing this computer remotely
-sudo apt install openssh-server -y
-
 # GUI config and session saver
 sudo apt-get install dconf-editor
-end_messages+=("To use dconf-edit's session auto-save, run 'dconf-editor' and go to org > cinnamon > cinnamon-session -> turn on 'auto-save-session'")
 
 # # tool for monitoring system events
 # sudo apt install inotify-tools -y
 
 # GitKraken (Graphical Git manager)
 pkg_name='gitkraken-amd64.deb'
-wget "https://release.gitkraken.com/linux/${pkg_name}" && sudo dpkg -i "$pkg_name"
+wget "https://release.gitkraken.com/linux/${pkg_name}" && sudo dpkg -i "$pkg_name"  # download and install
 rm "$pkg_name"  # remove .deb file
 end_messages+=("Installed debian (.deb) package: $pkg_name. If you want to remove it, run: 'sudo dpkg -r $pkg_name'")
+
+
+# visual appeal
+sudo apt install cmatrix -y  # run "cmatrix" to display a matrix-like animation in your terminal
+
+
+#################################################################################### Runtimes and SDKs
+# Java Development Kit
+sudo apt install openjdk-19-jdk -y
+end_messages+=("Installed java, run 'java --version' to check that it's the right version")
+
+# should already have a recent version of python (run "python3 --version" if you're unsure for some reason)
+sudo apt install python3-pip -y
+
+# python project dependencies manager
+pip3 install poetry
+
+# NodeJS 18
+sudo apt update
+# curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install nodejs
+# sudo apt install gcc g++ make
+
+
+# Yarn version 1
+sudo npm install --global yarn
 
 
 
@@ -162,34 +113,21 @@ sudo apt install krita -y
 sudo apt install gimp -y
 
 
+#################################################################################### Creative Workspace
+
+# Blender (3D modeling)
+sudo apt install blender -y
+
 
 #################################################################################### IDEs
 # PyCharm (Python) - Professional/Community
 # install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-professional-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
 install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
 
-
-#################################################################################### Creative Workspace
-
-# Blender (3D modeling)
-sudo apt install blender -y
-
-#################################################################################### Runtimes and SDKs
-# should already have a recent version of python (run "python3 --version" if you're unsure for some reason)
-sudo apt install python3-pip -y
-
-# python project dependencies manager
-pip3 install poetry
-
-# NodeJS 18
+# Android Studio 
+sudo apt-add-repository ppa:maarten-fonville/android-studio -y
 sudo apt update
-# curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt install nodejs
-# sudo apt install gcc g++ make
-
-
-# Yarn version 1
-sudo npm install --global yarn
+sudo apt install android-studio -y
 
 
 #################################################################################### Browsers
@@ -214,6 +152,15 @@ EOF
 sudo apt update
 sudo apt install librewolf -y
 end_messages+=("Create a desktop shortcut for Librewolf browser, sync your browser account and configure everything in it. Also install adblocker and some other plugins")
+
+
+#################################################################################### Remote Access / Share
+
+# service for accessing this computer remotely
+sudo apt install openssh-server -y
+
+# Screen-sharing user-client (like TeamViewer) - RustDesk
+install_deb_from_url "https://github.com/rustdesk/rustdesk/releases/download/1.1.9/rustdesk-1.1.9.deb"
 
 
 #################################################################################### Handling Microsoft stuff
@@ -299,21 +246,28 @@ sudo node build/src/discordas.js -r -u "http://localhost:9005" -c config.yaml
 cd "$HOME"
 
 
-#################################################################################### games and media
+#################################################################################### games
+
 # Steam
 sudo add-apt-repository multiverse
 sudo apt update
 sudo apt install steam -y
 
+#################################################################################### media encoding/handling
+
+# video operations
+sudo apt install ffmpeg -y
+
 
 #################################################################################### drivers
+
 # Mouse (G502) Calibration program
 sudo apt update
 sudo apt install piper -y
 
 end_messages+=("Piper is installed. Mouse profiler should have the configs: G7: Volume-Down , G8: Volume-Up , G-Shift: CTRL+ALT+T (launch terminal)")
 
-# Keyboard profiling
+# Keyboard profiling (corsair)
 sudo apt install ckb-next -y
 
 
@@ -359,6 +313,24 @@ sudo rm ${app_dl_name}  # cleanup
 # sudo mv Unigine* "$app_location"  # putting it where it *should* be
 end_messages+=("Downloaded Unigine Superposition-1.1 ; Check in their site if that's indeed the latest version (see via their download link)")
 
+
+
+#################################################################################### Docker
+sudo apt update
+sudo apt-get install ca-certificates curl gnupg lsb-release -y
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $distro stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# cat /etc/apt/sources.list.d/docker.list
+sudo chmod a+r /etc/apt/keyrings/docker.gpg  # make sure umask is correct
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-compose -y
+
+
+# Docker GUI manager. This installs Docker Desktop, but there's also Portainer and Rancher
+install_deb_from_url "https://desktop.docker.com/linux/main/amd64/docker-desktop-4.16.2-amd64.deb"
+
+
 # -------------------------------------------------------------------------------- debloat system
 # sudo apt-get remove --purge libreoffice* -y
 
@@ -371,9 +343,7 @@ sudo apt-get autoremove
 # -------------------------------------------------------------------------------- ended installations
 
 
-echo "Installations finished. Your attention is needed for the following:"
-for i in "${end_messages[@]}"; do echo "$i" ; done
-
+print_end_messages
 
 # TODO - media: Foobar
 
