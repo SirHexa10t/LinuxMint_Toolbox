@@ -6,7 +6,7 @@ source "$(dirname $0)/install_functions.sh"
 
 #################################################################################### system and os utilities
 sudo apt update
-sudo apt install software-properties-common apt-transport-https wget ca-certificates gnupg2
+sudo apt install software-properties-common apt-transport-https curl wget ca-certificates gnupg2 -y
 
 # swap is not supported in BTRFS.
 # # set up swap (Always allocate a bit of memory for swapfile. Even if you have a lot of memory - it's useful when there's a memory leak, and some program access it regardless.)
@@ -53,10 +53,7 @@ sudo apt-get install dconf-editor
 # sudo apt install inotify-tools -y
 
 # GitKraken (Graphical Git manager)
-pkg_name='gitkraken-amd64.deb'
-wget "https://release.gitkraken.com/linux/${pkg_name}" && sudo dpkg -i "$pkg_name"  # download and install
-rm "$pkg_name"  # remove .deb file
-end_messages+=("Installed debian (.deb) package: $pkg_name. If you want to remove it, run: 'sudo dpkg -r $pkg_name'")
+install_deb_from_url "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
 
 # man-like package, explains packages shortly (example: tldr ls)
 sudo apt install tldr -y
@@ -90,15 +87,12 @@ sudo npm install --global yarn
 
 
 #################################################################################### editors
+
+# sublime-text
 sudo apt install sublime-text -y  # might already be installed  # TODO - maybe delete
+
 # install Visual Studio Code
-sudo apt update
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-rm microsoft.gpg
-sudo apt update
-sudo apt install code -y
+install_with_gpg --app_name 'vscode' --apt_name 'code' --gpg_url 'https://packages.microsoft.com/keys/microsoft.asc' --src "https://packages.microsoft.com/repos/vscode stable main"
 end_messages+=("VSCode might require system reboot to have caret/cursor shortcuts working")
 
 # At least as of 2022-12-31, JetBrains Fleet isn't worth installing.
@@ -124,7 +118,6 @@ sudo apt install blender -y
 
 #################################################################################### IDEs
 # PyCharm (Python) - Professional/Community
-# install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-professional-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
 install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
 
 # Android Studio 
@@ -135,13 +128,10 @@ sudo apt install android-studio -y
 
 #################################################################################### Browsers
 # Brave
-sudo apt install apt-transport-https curl -y
-sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-sudo apt update
-sudo apt install brave-browser -y
+install_with_gpg --app_name 'brave-browser-release' --apt_name 'brave-browser' --gpg_url 'https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg' --src "https://brave-browser-apt-release.s3.brave.com/ stable main"
 end_messages+=("Create a desktop shortcut for Brave browser, sync your browser account and configure everything in it")
 
+# TODO - try to use "install with gpg" too
 # Libre Wolf
 wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg
 sudo tee /etc/apt/sources.list.d/librewolf.sources << EOF > /dev/null
@@ -167,8 +157,10 @@ install_deb_from_url "https://github.com/rustdesk/rustdesk/releases/download/1.1
 
 
 #################################################################################### Handling Microsoft stuff
+
 # links info display - use like this:  lnkinfo <path-to-lnk-file>
 sudo apt install liblnk-utils -y
+
 # installing OnlyOffice; https://helpcenter.onlyoffice.com/installation/desktop-install-ubuntu.aspx
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
@@ -179,6 +171,7 @@ sudo mv /tmp/onlyoffice.gpg /etc/apt/trusted.gpg.d/
 echo 'deb https://download.onlyoffice.com/repo/debian squeeze main' | sudo tee -a /etc/apt/sources.list.d/onlyoffice.list
 sudo apt-get update
 sudo apt install onlyoffice-desktopeditors -y	 # requires accepting EULA manually
+
 # Microsoft (Office) core fonts (should be provided with OnlyOffice, but probably won't be there in LibreOffice)
 sudo apt install msttcorefonts -y
 
