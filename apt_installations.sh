@@ -58,6 +58,9 @@ wget "https://release.gitkraken.com/linux/${pkg_name}" && sudo dpkg -i "$pkg_nam
 rm "$pkg_name"  # remove .deb file
 end_messages+=("Installed debian (.deb) package: $pkg_name. If you want to remove it, run: 'sudo dpkg -r $pkg_name'")
 
+# man-like package, explains packages shortly (example: tldr ls)
+sudo apt install tldr -y
+tldr -u  # update manuals
 
 # visual appeal
 sudo apt install cmatrix -y  # run "cmatrix" to display a matrix-like animation in your terminal
