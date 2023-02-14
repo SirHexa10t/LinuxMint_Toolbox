@@ -1,0 +1,95 @@
+# The following was written/tested on a Synology DS1520+,  running DSM 7.1.1
+
+# Hardware specs by model name: (according to https://www.youtube.com/watch?v=-RbAiqWf-mQ )
+# [lettr_code][XX][YY]?
+# letter_code:   DS: Disk Station , FS: Flash Series (SSD only) , SA: SAS , RS: Rack Station , NVR: Network Video Recorder (has GPU and does video-related workloads)
+# XX: max number of drives that the device can potentially support (it's taking 5 extra per expansion port into consideration). It's DANGEROUS to add external drives, as a failed connection could render your externally added drives unusable!
+# YY: year that the model was released in
+# ?:  +: support for extra software features (docker / VMs, BTRFS) , slim: 2.5" bays version , XS: extra storage (but weaker processing power) , RP: redundant power-supply , J: simplest (doesn't support BTRFS)
+
+
+# Upgrade your device with an M.2 NVMe SSD for caching. # TODO - find what's the optimal ratio of total storage to cache storage 
+
+# Consider upgrading your RAM if you're using the NAS for applications usage. Also, RAM is used for cache while writing.
+
+# Due to rewrite requirements when running out of space in SMR drives, you should avoid them. Get CMR drives.
+#   You might get really good drives by shucking external drives. It's a gamble.
+
+
+# Choosing RAID:  if you don't know much about RAID, read this: https://kb.synology.com/en-global/DSM/help/DSM/StorageManager/storage_pool_what_is_raid?version=7
+# If you have several (4+) drives, you'd want to use SHR (besides, you bought a Synology device, so make use of this option)
+#   You can simulate the effect of choosing any specific RAID strategy on this page: https://www.synology.com/en-us/support/RAID_calculator
+# In SHR1/SHR2, you can lose up to 1 / 2 drive(s) of largest capacity, accordingly. 10% extra data will be taken away by DSM
+#   There are some great advantages to SHR which won't be explained in this file.
+
+# For filesystem, I suggest BTRFS. Won't be explained here either.
+
+
+
+Convenience:
+------------
+User & Group > Advanced -> make sure you don't have Password Expiration
+    Set-up a strong password, don't rely on password expiration.
+
+# TODO - integrate SSH access
+
+Hardware & Power > General > Power Recovery -> Restart automatically after a power failure
+    Could cause damage if you encounter another power-out as the device boots
+
+
+
+Security (if it's accessible to the internet)
+--------
+Security > Protection -> Enable auto block
+    Put in something like 100 Login attempts every 30 minutes. It'll block brute-force attacks, but not block out users who forgot their password.
+
+Make sure admin account is disabled.
+
+Person (top right corner) > Personal -> Sign-in Method -> Enable 2-Factor Authentication
+
+Login Portal > DSM -> change the DSM port
+    Slightly more secure than using the well-known default one.
+
+# TODO - add a regular user that'll be used regularly instead of the initial Admin one
+
+
+
+Utilities:
+----------
+Open the NAS to the world
+    Port-forward https DSM ports on your router
+    Modify the NAS's firewall
+
+# TODO - integrate VPN
+
+# TODO - integrate Docker
+
+# TODO - integrate Pi-Hole
+
+# TODO - you can access the NAS with DDNS if you setup a Synology account; you can get a subdomain name in .synology.me 
+
+# TODO - torrent downloads?
+
+# TODO - integrate surveillance camera feed
+
+# TODO - might want to use Active Insight (requires account) for problem reports
+
+
+Maintenance and data safety:
+----------------------------
+HDD/SSD > Task Scheduler
+    Make sure you have a monthly S.M.A.R.T tests
+    
+Storage > <pool> > Schedule Data Scrubbing
+    Check for errors (bit-rot) on your disks on off-hours. Every 3 months or so.    
+
+# TODO - use hyper-backup to backup important files to another place
+
+# TODO - If you're using BTRFS, enable Snapshot Replication
+
+# TODO - snapshot replication (BTRFS feature)
+
+# TODO - UPS integration:  Hardware & Power > UPS -> Time before DiskStation enters Safe Mode
+    You set x minutes of running on UPS before restart deciding to shut down
+
+

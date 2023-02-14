@@ -246,7 +246,7 @@ cd "$HOME"
 
 # Steam
 sudo add-apt-repository multiverse
-sudo apt update
+sudo apt update -y
 sudo apt install steam -y
 
 #################################################################################### media encoding/handling
