@@ -23,6 +23,13 @@ sudo apt-get install ppa-purge  -y
 # nala - apt, but prettier
 sudo apt install nala -y
 
+# TODO - install doas ?
+
+# Rust applications
+# TODO - install exa ? (ls, but more colorful)
+# TODO - install "bat" ? (cat, but colorized)
+# Similarly there's RipGrep replacing grep, FD replacing find, procs instead of ps.
+
 # .deb files handler
 sudo apt install gdebi -y
 
@@ -37,9 +44,11 @@ sudo apt install dirmngr
 
 # Encryption of personal data
 sudo apt install keepassxc -y
-# source the nearby (file in same dir) basic installation shortcuts
-source "$(dirname $0)/install_functions.sh"
-heck
+
+# virtual machine manager
+end_messages+=("QEMU setup isn't covered by this script because it's too hands-on, and includes a restart in the middle.")
+
+# disk capacity check
 sudo apt install f3 -y
 
 # VPN (NordVPN)
@@ -59,9 +68,16 @@ install_deb_from_url "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
 sudo apt install tldr -y
 tldr -u  # update manuals
 
+# TODO - remove?
+# Connect via SMB (for NAS usage)
+sudo apt-get install cifs-utils -y
+# Connect via NFS (for NAS usage)
+sudo apt install nfs-common -y
+
 # visual appeal
 sudo apt install cmatrix -y  # run "cmatrix" to display a matrix-like animation in your terminal
 
+# TODO - install that graphical resource / device thing with split panes for terminal (forgot its name)
 
 #################################################################################### Runtimes and SDKs
 # Java Development Kit
@@ -255,6 +271,13 @@ sudo apt install steam -y
 sudo apt install ffmpeg -y
 
 
+# TODO - remove? Generally contemplating between  gmusicbrowser, amarok, or quodlibet.  quodlibet is (supposedly) able to play music from within archives, and browse entire playlist folders as one...
+# music library
+sudo add-apt-repository ppa:lazka/ppa
+sudo apt-get update -y
+sudo apt-get install quodlibet -y
+
+
 #################################################################################### drivers
 
 # Mouse (G502) Calibration program
@@ -340,7 +363,5 @@ sudo apt-get autoremove
 
 
 print_end_messages
-
-# TODO - media: Foobar
 
 # TODO - qbittorrent
