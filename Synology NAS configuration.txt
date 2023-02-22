@@ -25,37 +25,11 @@
 # For filesystem, I suggest BTRFS. Won't be explained here either.
 
 
-
-Convenience:
-------------
-User & Group > Advanced -> make sure you don't have Password Expiration
-    Set-up a strong password, don't rely on password expiration.
-
-# TODO - integrate SSH access
-
-Hardware & Power > General > Power Recovery -> Restart automatically after a power failure
-    Could cause damage if you encounter another power-out as the device boots
-
-
-
-Security (if it's accessible to the internet)
---------
-Security > Protection -> Enable auto block
-    Put in something like 100 Login attempts every 30 minutes. It'll block brute-force attacks, but not block out users who forgot their password.
-
-Make sure admin account is disabled.
-
-Person (top right corner) > Personal -> Sign-in Method -> Enable 2-Factor Authentication
-
-Login Portal > DSM -> change the DSM port
-    Slightly more secure than using the well-known default one.
-
-# TODO - add a regular user that'll be used regularly instead of the initial Admin one
-
-
-
 Utilities:
 ----------
+Package Center > Install the following:
+    Snapshot Replication
+
 Open the NAS to the world
     Port-forward https DSM ports on your router
     Modify the NAS's firewall
@@ -75,6 +49,59 @@ Open the NAS to the world
 # TODO - might want to use Active Insight (requires account) for problem reports
 
 
+
+Convenience and responsiveness:
+-------------------------------
+User & Group > Advanced -> make sure you don't have Password Expiration
+    Set-up a strong password, don't rely on password expiration.
+
+# TODO - integrate SSH access
+
+Control Panel >
+    Hardware & Power > General > Power Recovery -> Restart automatically after a power failure
+        Could cause damage if you encounter another power-out as the device boots
+    File Services > SMB > Advanced Settings
+        > General:
+            Transport "encryption mode": disabled or "client defined" (SMB has slower encryption than HTTPS. Might be necessary in some cases; speed improvement)
+            "server signing": disabled (impersonation prevention; speed improvement)
+            "Opportunistic Locking": enabled (keeps a stream open; speed improvement)
+            "SMB2 lease": enabled (speed improvement)
+            "SMB durable handles" enabled (no need for new connections for new files; speed improvement)
+        > Others:
+            asyncronous read: enabled (for multiple SMB connections; speed improvement)
+    File Services > SMB > Enable Transfer Log
+        don't mark "Read", it'll give you too many logs
+    File Services > Advanced -> Enable file fast clone
+        this is a BTRFS feature. Instant copy between 2 places on the same folder. Also, the copy doesn't take any space unless there are changes applied to it
+    Network > Network Interface > Edit (connection) > IPv4 > Set MTU manually: 9000
+        Packages the transmission of many small items together 
+        # TODO - figure out why it won't allow more than 1500
+
+
+BTRFS improvements:
+    Storage Manager > <Volume> > [*** on the right-side of the volume in the middle of the screen] -> Record File Access Time: Never
+        This determines modification on read, which burdens BTRFS with more change-entries per file. You can also set to Monthly; it'd be much better than "Daily".
+
+
+
+Security (if it's accessible to the internet)
+--------
+# TODO - disable user "Admin"
+
+Security > Protection -> Enable auto block
+    Put in something like 100 Login attempts every 30 minutes. It'll block brute-force attacks, but not block out users who forgot their password.
+
+Make sure admin account is disabled.
+
+Person (top right corner) > Personal -> Sign-in Method -> Enable 2-Factor Authentication
+
+Login Portal > DSM -> change the DSM port
+    Slightly more secure than using the well-known default one.
+
+# TODO - add a regular user that'll be used regularly instead of the initial Admin one
+
+
+
 Maintenance and data safety:
 ----------------------------
 HDD/SSD > Task Scheduler
@@ -91,5 +118,45 @@ Storage > <pool> > Schedule Data Scrubbing
 
 # TODO - UPS integration:  Hardware & Power > UPS -> Time before DiskStation enters Safe Mode
     You set x minutes of running on UPS before restart deciding to shut down
+
+
+
+
+
+Connection:
+-----------
+Option 1: SMB through terminal (cifs mount)
+* On your Linux-PC, install: cifs-utils
+* run connection command in this format:   $ sudo mount -t cifs -o username=<username>,password="<password>",uid=$(id -u) //<nas_ip_addr>/<folder_name> <mountpoint>
+    # Example:
+    username="sam"
+    password="iauewsdbfnolisudbflisbdfklbsd"
+    nas_address='10.0.0.33'
+    folder='homework'
+    mountpoint='/nas_mount'
+
+    mkdir "$mountpoint"  # only need to do once. If you needed sudo for your dir choice, you'll also need:   $ sudo chmod 777 "$mountpoint"
+    sudo mount -t cifs -o username="$username",password="$password",uid=$(id -u) "//$nas_address/$folder" "$mountpoint"
+    cd "$mountpoint" && ls
+* when you're done you can unmount with:
+    sudo umount "$mountpoint"
+
+Option 2: SMB through File Manager
+* Your file manager might haVE A "Network" label at the bottom of your quick-access menu (left side in file-explorer window). Find your NAS there, and enter username and password.
+
+Option 3:
+* Drag-and-drop into the web-client
+
+
+NFS:
+* Go to Control Panel > NFS
+
+
+
+
+BTRFS send:  ( https://community.synology.com/enu/forum/17/post/102308 )
+ssh-keygen -t rsa -b 4096
+
+
 
 
