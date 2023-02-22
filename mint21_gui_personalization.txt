@@ -80,6 +80,9 @@ Go to System Settings >
 
     Hardware > Keyboard > Shortcuts
         > System > Lock screen -> Set CTRL+ESC instead of CTRL+ALT+L (which is PyCharm's "sort this page" shortcut)
+        > Launchers > Launch terminal > Add Super+Return (Super=Windows-key, Return=Enter)
+        > Launchers > Home folder > Set Super+H instead of Shper+E (Super=Windows-key)
+        > Windows > Close window > Add Ctrl+W
 
     Hardware > Keyboard > Layouts -> add your extra languages
         -> Options... > Switching to another layout -> choose a keyboard shortcut (maybe ALT+SHIFT for consistency with Windows)
@@ -91,7 +94,6 @@ Go to System Settings >
 Set Xed (text editor) to use a different theme, because its .sh editor is barely readable 
     Of the default options I find "Oblivion" or "Solarized Dark" to be the most tolerable
     
-
 Template: Add a new shell file option to right-click:
     bs="$HOME/Templates/bash_script.sh"
     touch "$bs" && chmod ug+x "$bs" && printf '#!/bin/bash\n\n' > "$bs"
@@ -99,6 +101,13 @@ Template: Add a new text file (non-executable) option to right-click:
     pt="$HOME/Templates/plain_text.txt"
     touch "$pt" && chmod 664 "$pt"
 
+# the following scripts are added on right-click menu. The script is run at current location without args, unless right-clicked a file, then the script get the filename (just the name, no path) as one arg
+    scripts_dir="$HOME/.local/share/nemo/scripts"
+    ln -s "$scripts_dir" "$HOME/scripts"  # create shortcut (soft link) for easier access in the future. To make future scripts take effect immediately, follow the link to the path instead of just opening it. Also refresh that folder.
+Script: Write file/folder name as a memo for later, in "handle_later.txt" at HOME:
+    scripts_dir="$HOME/.local/share/nemo/scripts"
+    memo_file="$scripts_dir/memo"
+    echo -e '#!/bin/sh\necho "File of interest: $(date +%Y-%m-%d_%T) $(pwd)/$1" >> "$HOME/handle_later.txt"' > "$memo_file" && chmod +x "$memo_file"
 
 Check that you have internet connection
     If not, disconnect and reconnect; it might solve the problem
@@ -149,7 +158,7 @@ Enable starting a terminal at current window (works for nemo file manager):
     run: touch "${HOME}/.gnome2/accels/nemo"
     reset cinnamon by logging out/in (CTRL+ALT+BACKSPACE)
         the created file will now have many commented configuration lines
-    uncomment and set key for the line that has "OpenInTerminal". run:
+    uncomment and set key for the line that has "OpenInTerminal". run these commands:
         keyshortcut='<Primary><Shift>t'  # only line you might want to change, the rest stay the same  # "Ctrl" is "Primary"
         original_line='; (gtk_accel_path "<Actions>/DirViewActions/OpenInTerminal" "")'
         replace_line='(gtk_accel_path "<Actions>/DirViewActions/OpenInTerminal" "'$keyshortcut'")'
