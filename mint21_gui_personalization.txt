@@ -91,8 +91,17 @@ Go to System Settings >
     Hardware > Power Management -> see that the settings are acceptable
     
 
+Set bigger default terminal size: 
+    Open Terminal
+    if you don't see top menu, right-click in it and check "Show Menubar"
+    Edit > Initial terminal size: 120 columns, 36 rows
+
 Set Xed (text editor) to use a different theme, because its .sh editor is barely readable 
     Of the default options I find "Oblivion" or "Solarized Dark" to be the most tolerable
+    If you want to use Monokai style, the steps are:
+        Download/save-to-xml a monokai coloring scheme (can be found here for example): https://github.com/trusktr/gedit-color-schemes/blob/master/gtksourceview-3.0/styles/Monokai.xml
+        In Xed, go to Edit > Preferences > Theme -> '+' button -> (browse for the monokai file)
+        Still in the themes menu, choose the Monokai one, see how it changes your files' look.
     
 Template: Add a new shell file option to right-click:
     bs="$HOME/Templates/bash_script.sh"
