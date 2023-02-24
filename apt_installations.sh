@@ -107,9 +107,14 @@ sudo npm install --global yarn
 # sublime-text
 sudo apt install sublime-text -y  # might already be installed  # TODO - maybe delete
 
-# install Visual Studio Code
-install_with_gpg --app_name 'vscode' --apt_name 'code' --gpg_url 'https://packages.microsoft.com/keys/microsoft.asc' --src "https://packages.microsoft.com/repos/vscode stable main"
-end_messages+=("VSCode might require system reboot to have caret/cursor shortcuts working")
+
+# install VSCodium    # Don't install Visual Studio Code itself, it has Telemetry. Unless you're a .Net developer, then you'll probably need some proprietary features. 
+wget https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg 
+sudo mv pub.gpg /usr/share/keyrings/vscodium-archive-keyring.asc
+echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.asc ] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs vscodium main' | sudo tee /etc/apt/sources.list.d/vscodium.list
+sudo apt update
+sudo apt install codium -y # codium-insiders
+
 
 # At least as of 2022-12-31, JetBrains Fleet isn't worth installing.
 # It doesn't have the advanced caret options of their established IDEs, some different or missing keyboard shortcuts, no markdown preview, worse coloring and marking than VS Code's (for bash and txt)
@@ -269,6 +274,11 @@ sudo apt install steam -y
 
 # video operations
 sudo apt install ffmpeg -y
+
+# screen video capture
+# alternatives: SimpleScreenRecorder OBS (Open Broadcaster Software), EasyScreenCast (GNOME tool), vokoscreen, RecordMyDesktop
+sudo apt install kazam -y
+end_messages+=("Piper is installed. When using it, change the output format to mp4 or (preferrably) webm. The recording can be stopped via the task-menu icon")
 
 
 # TODO - remove? Generally contemplating between  gmusicbrowser, amarok, or quodlibet.  quodlibet is (supposedly) able to play music from within archives, and browse entire playlist folders as one...
