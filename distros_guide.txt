@@ -1,0 +1,22 @@
+
+# Feel free to ignore this file, it's a work in progress, still in the data-aggregation phase
+
+OpenSUSE Tumbleweed - rolling versions, but still stable. Can switch flavors easily!
+
+RedHat/Fedora - Highly polished, just works. Solid choice in most ways
+
+Debian/Ubuntu - user friendly (again, after failing at it for a while)
+
+Arch - custom-tailored ; runs specifically on your hardware (marginally faster than other distros), comes with minimal installations
+    Known to be less stabel
+
+Kali - basically a network and penetration-testing platform
+
+Gentoo - Like Arch but more extreme 
+
+Alpine - very light and minimalistic (supports run-from-RAM), great for microservices and dockerized server stuff
+
+
+
+
+

@@ -23,13 +23,6 @@ sudo apt-get install ppa-purge  -y
 # nala - apt, but prettier
 sudo apt install nala -y
 
-# TODO - install doas ?
-
-# Rust applications
-# TODO - install exa ? (ls, but more colorful)
-# TODO - install "bat" ? (cat, but colorized)
-# Similarly there's RipGrep replacing grep, FD replacing find, procs instead of ps.
-
 # .deb files handler
 sudo apt install gdebi -y
 
@@ -38,6 +31,9 @@ sudo apt install tmux -y
 
 # a tool that simulates keypresses
 # sudo apt install xdotool -y
+
+# like nano but better. If you're not restricted to the terminal (and the data isn't, such as results from "man"), just use Xed.
+# sudo apt install micro -y 
 
 # manage gpg keyrings
 sudo apt install dirmngr
@@ -76,6 +72,7 @@ sudo apt install nfs-common -y
 
 # visual appeal
 sudo apt install cmatrix -y  # run "cmatrix" to display a matrix-like animation in your terminal
+sudo apt install oneko -y # run "oneko" to have a kitten chase your mouse around
 
 # TODO - install that graphical resource / device thing with split panes for terminal (forgot its name)
 
@@ -374,4 +371,69 @@ sudo apt-get autoremove
 
 print_end_messages
 
+
 # TODO - qbittorrent
+# TODO - IntelliJ IDEA
+
+# TODO - add ranger
+# trash-cli / rm-trash  -  trash gives you cli for handling recycle bin , rm-trash is rm (same api) but to recycle bin rather than immediate delete
+# midnight commander ("mc")- alternative to ranger
+# TODO - if you need a lot of disk-space centered file management: ncdu or gdu
+
+# autojump - use by typing "j <abbreviations>" to jump to your desired location; it'll find your desired path. (destinations are weighted by their usage)
+  # very similar to zoxide (use z instead of j). Need to see which is better
+
+
+# TODO - install doas ?
+
+# speedtest-cli - run "speedtest" to check internet speeds
+
+# Rust applications
+# TODO - install exa ? (ls, but more colorful)
+# TODO - install "bat" ? (cat, but colorized)
+# Similarly there's RipGrep replacing grep, FD replacing find, procs instead of ps.
+
+# magick - image format converter
+# gifgen - turn videos to gifs
+
+# Terminal gui-like
+# bpytop (general overview like htop, but more graphical and covers a bit more facets)
+  # btm (bottom) - like top, but has usage graphs. Type "?" while running to see command-keys
+# eDEX-UI - hacker-style terminal file-browser
+# mapscii - world map in ascii; has zoom in/out functionality
+
+
+# most - adds color to "man" command. Requires: export PAGER=most
+
+# wikit - get wikipedia definition of a word
+
+# joplin - markdown text editor
+  # marktext - handles markdown text (specially)
+  # Obsidian - handles markdown too, but also does a lot more; organizes your files into categories for you
+  # NeoVim - vim-styled editor  # run "vimtutor" to learn vim in 30m
+
+
+# ardour - audio editing
+# obs - video editing
+# Blender - 3D editor and animation creator
+  # FreeCAD - create 3D models
+# QGIS - map creation / editor
+# Inkscape - Adobe Illustrator replacement
+
+
+# OpenRGB - custom RGB lighting management
+# Goverlay - stats overlay on top of games (Like Afterburner+RivaRuner do) + performance result graphs
+
+# internet-service clients:
+# mailspring - email client
+# Fluent RSS Reader - get rss from your news sites
+# LBRY - get subscription-content from various video sites
+
+
+# if you're on KDE (sometimes not required):
+# KDE Connect - phone-desktop connection (wireless) - send files over, use phone interface for input
+# kate - text editor
+# mpv, aka celluloid - media player
+# FireDragon - browser based on LibreWolf  # install ublock origin on it  # configure it - prevent WebRTC from leaking local IP addresses
+# Okular (viewing PDFs)
+
