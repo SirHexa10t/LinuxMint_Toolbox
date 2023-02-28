@@ -135,8 +135,13 @@ sudo apt install blender -y
 
 
 #################################################################################### IDEs
+# Get the direct-download link of JetBrains product by checking the "direct link" in an IDE's download page (such as:  https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC  )
 # PyCharm (Python) - Professional/Community
-install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
+install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.3.2' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
+
+# IntelliJ IDEA (Java , and some others) - Community
+install_targz_in_opt --url "https://download.jetbrains.com/idea" --app_name 'ideaIC-2022.3.2' --app_location '/opt/jetbrains' --inner_executable "bin/idea.sh"
+
 
 # Android Studio 
 sudo apt-add-repository ppa:maarten-fonville/android-studio -y

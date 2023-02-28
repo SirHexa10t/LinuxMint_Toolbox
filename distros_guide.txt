@@ -3,9 +3,11 @@
 
 OpenSUSE Tumbleweed - rolling versions, but still stable. Can switch flavors easily!
 
-RedHat/Fedora - Highly polished, just works. Solid choice in most ways
+Fedora - Highly polished, just works. Solid choice in most ways
 
-Debian/Ubuntu - user friendly (again, after failing at it for a while)
+RedHat/CentOS - stable (business)
+
+Ubuntu - user friendly (again, after failing at it for a while)
 
 Arch - custom-tailored ; runs specifically on your hardware (marginally faster than other distros), comes with minimal installations
     Known to be less stabel
