@@ -39,6 +39,8 @@ Open the NAS to the world
 # TODO - integrate Docker
 
 # TODO - integrate Pi-Hole
+    # Saw someone calling it "pinhole" - is that a variation of it? 
+    # Need to check what "unbound" is (works with it)
 
 # TODO - you can access the NAS with DDNS if you setup a Synology account; you can get a subdomain name in .synology.me 
 
@@ -48,6 +50,7 @@ Open the NAS to the world
 
 # TODO - might want to use Active Insight (requires account) for problem reports
 
+# TODO - Maybe use Pinhole is nice, make sure to use unbound with it.
 
 
 Convenience and responsiveness:
@@ -57,10 +60,15 @@ User & Group > Advanced -> make sure you don't have Password Expiration
 
 # TODO - integrate SSH access
 
-Control Panel >
-    Hardware & Power > General > Power Recovery -> Restart automatically after a power failure
+Storage Manager
+    > HDD/SSD -> right-click the M.2 device "cache device <num>" -> manage [...] > Create SSD cache
+        Note: with 1 M.2 device you can only do read-only caching; you need 2 devices for read-write cache
+
+
+Control Panel
+    > Hardware & Power > General > Power Recovery -> Restart automatically after a power failure
         Could cause damage if you encounter another power-out as the device boots
-    File Services > SMB > Advanced Settings
+    > File Services > SMB > Advanced Settings
         > General:
             Transport "encryption mode": disabled or "client defined" (SMB has slower encryption than HTTPS. Might be necessary in some cases; speed improvement)
             "server signing": disabled (impersonation prevention; speed improvement)
@@ -69,11 +77,11 @@ Control Panel >
             "SMB durable handles" enabled (no need for new connections for new files; speed improvement)
         > Others:
             asyncronous read: enabled (for multiple SMB connections; speed improvement)
-    File Services > SMB > Enable Transfer Log
+    > File Services > SMB > Enable Transfer Log
         don't mark "Read", it'll give you too many logs
-    File Services > Advanced -> Enable file fast clone
+    > File Services > Advanced -> Enable file fast clone
         this is a BTRFS feature. Instant copy between 2 places on the same folder. Also, the copy doesn't take any space unless there are changes applied to it
-    Network > Network Interface > Edit (connection) > IPv4 > Set MTU manually: 9000
+    > Network > Network Interface > Edit (connection) > IPv4 > Set MTU manually: 9000
         Packages the transmission of many small items together 
         # TODO - figure out why it won't allow more than 1500
 
@@ -156,6 +164,9 @@ NFS:
 
 BTRFS send:  ( https://community.synology.com/enu/forum/17/post/102308 )
 ssh-keygen -t rsa -b 4096
+
+
+
 
 
 

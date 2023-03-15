@@ -105,7 +105,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #################################################################################### editors
 
 # sublime-text
-sudo apt install sublime-text -y  # might already be installed  # TODO - maybe delete
+# sudo apt install sublime-text -y  # might already be installed  # TODO - maybe delete
 
 
 # install VSCodium    # Don't install Visual Studio Code itself, it has Telemetry. Unless you're a .Net developer, then you'll probably need some proprietary features. 
@@ -381,7 +381,12 @@ print_end_messages
 
 
 # TODO - qbittorrent
-# TODO - IntelliJ IDEA
+
+
+# TODO - maybe install Nix package manager
+#   sh <(curl -L https://nixos.org/nix/install) --daemon
+#   echo "experimental-features = nix-command flakes" >> "$HOME/.config/nix/nix.conf"  # run commands easier and search for packages locally with "nix search nixpkgs <pkg>"
+#     alternatively use the webpage: https://search.nixos.org/packages  - it contains installation commands for packages too
 
 # TODO - add ranger
 # trash-cli / rm-trash  -  trash gives you cli for handling recycle bin , rm-trash is rm (same api) but to recycle bin rather than immediate delete
