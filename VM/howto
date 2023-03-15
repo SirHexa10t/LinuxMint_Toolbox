@@ -251,31 +251,20 @@ Download this project: https://github.com/pavolelsig/L-G_helper
 
 extract both and put the looking-glass folder in the helper's folder 
 
+    Notice: if the helper won't manage to compile for you, let it setup your environment and service, and compile the binaries according to:  https://looking-glass.io/docs/B6/build/#host-building
+        The apt installations could be a bit different than in the helper, so rerun them regardless
+
 go into the helper and run:
     chmod +x lg.sh
     sudo ./lg.sh
 
 confirm prompts if you see no problem
-go to <helper_folder>/<looking-glass_folder>/client/build/  and take the compiled client "looking-glass-client" somewhere sensible, like to ${Home}/
-    sudo mv looking-glass-client ${HOME}/
-        You could also put it in "/usr/local/bin/" in the future, for automated usage
+go to <helper_folder>/<looking-glass_folder>/client/build/  and take the compiled client "looking-glass-client" somewhere sensible, like to /usr/local/bin/
+    sudo mv looking-glass-client /usr/local/bin/
 
 
 # guest-vm client
-In the VM:
-make sure secure-boot is disabled in VM
-    go to Windows settings -> Recovery -> Advanced startup > Restart now
-    find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2
-    in the grey-blue configurations screen, go to Device Manager > Secure Boot Configuration -> "Attempt Secure Boot" should be disabled
-get the driver:  https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/upstream-virtio/
-get the windows client from the same version you took the host client: https://looking-glass.io/downloads
-install:
-    extract the driver and client
-    go to Device Manager > System devices -> PCI standard RAM Controller -> Update Driver -> Browse locally -> ( VirtIO -> Win10 -> amd64)
-    execute the windoes client exe to install it
-
-
-follow the instructions for your used version; https://looking-glass.io/docs/B5.0.1/install/   (docs hub: https://looking-glass.io/wiki/Installation_on_other_distributions)
+follow the instructions for your used version; https://looking-glass.io/docs/B6/install/  (docs hub: https://looking-glass.io/wiki/Installation_on_other_distributions)
     just include the following (shared memory: you send the computed frames to your host's card) before the last closing </devices> tag:
         <shmem name='looking-glass'>
             <model type='ivshmem-plain'/>
@@ -284,11 +273,33 @@ follow the instructions for your used version; https://looking-glass.io/docs/B5.
     It's 32M for 1080p; should be 128M for 4K. Double it again if you want High Dynamic Range (HDR)
     seemingly it's necessary that the VM options would have Video set to none (instead of QXL) and Display Spice set to Hypervisor default
 
+In the VM: make sure secure-boot is disabled in VM
+    go to Windows settings -> Recovery -> Advanced startup > Restart now
+    find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2
+    in the grey-blue configurations screen, go to Device Manager > Secure Boot Configuration -> "Attempt Secure Boot" should be disabled
+Install looking-glass guest client in the VM: 
+    get the windows client from the same version you took the host client: https://looking-glass.io/downloads
+    get the driver (unnecessary for Looking-Glass B6 and onwards):  https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/upstream-virtio/
+    install:
+        extract the client and (maybe, depending on version) driver
+        client: run the windows client exe as administrator to install it, make sure to create a shortcut
+            add the program's shortcut to startup folder: "$USER_HOME/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup" (you can find it through Run (Win+R): "shell:startup")
+            After adding it, the program should be listed in Task Manager's startup tab
+        driver: go to Device Manager > System devices -> PCI standard RAM Controller -> Update Driver -> Browse locally -> ( VirtIO -> Win10 -> amd64)
 
-run the looking-glass-client file, add -F for full-screen
+
+
+Check that it's working (run clients on both host/guest sides)
+    run the looking-glass-client file, add -F for full-screen
     the VM needs to run so the client would find it
     to configure, run "./looking-glass-client --help"
     to debug, run "export SDL_VIDEO_X11_VISUAL_ID="  (details here:  https://forum.level1techs.com/t/looking-glass-triage/130952/1367  )
+
+
+You can remove the USB mouse and keyboard passthroughs, if you plan on constantly using LookingGlass (they can be added manually during runtime anyway)
+
+remove: Tablet, Display Spice, Serial 1
+    and check again that things are working as expected
 
 
 external references:
@@ -300,8 +311,6 @@ running multiple VMs - https://www.youtube.com/watch?v=TMILDcOOOyY
 
 
 
-
-# TODO - remove any?: Tablet, Display Spice, Serial 1
 
 
 # Finishing touches

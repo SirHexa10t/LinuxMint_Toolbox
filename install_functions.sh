@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-distro=jammy
+distro=`cat /etc/*release | grep UBUNTU_CODENAME | cut -d '=' -f 2`  # For Linux Mint 21(.1) the result is "jammy"
 
 end_messages=()
 
