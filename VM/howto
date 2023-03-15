@@ -1,0 +1,510 @@
+Guide for AMD CPU + Nvidia GPU
+Includes connection through another device on NAT rather than GPU BIOS loading
+
+# setting up bost:
+# ================
+Make sure in BIOS that:         [can be automated to a few commands and an if statement that quits]
+    CSM (Boot) is disabled (so UEFI mode is used)
+    IOMMU (CPU) is enabled    (you can check later with:  dmesg | grep AMD-Vi ) ( you can list IOMMU devices with this command:    for a in /sys/kernel/iommu_groups/*; do find $a -type l; done   )
+    NX (CPU) is enabled
+    SVM (CPU) is enabled
+
+Edit grub:  sudo nano /etc/default/grub
+    set either (both work, the latter lets you see the bootloader's logs when starting)
+        GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt iommu=1 kvm.ignore_msrs=1 vfio-pci.ids=10de:2204,10de:1aef"
+    or
+        GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt"
+    run "sudo update-grub" to apply the changes
+reboot
+
+
+install Libvirt and qemu:
+    sudo apt update && sudo apt install qemu-kvm qemu libvirt-clients libvirt-daemon-system bridge-utils virt-manager ovmf -y
+    sudo apt install guestfs-tools -y  # non-essential tool; lets you (among other things) compress vm disk files
+reboot
+
+
+added drivers to RAM-FS using dracut:  (if you want to know how bootloaders work:   https://www.youtube.com/watch?v=3OdlPmPbLII&t=270s )
+    sudo apt install dracut -y
+    sudo mkdir -p /etc/dracut.conf.d/
+    sudo nano /etc/dracut.conf.d/local.conf      #   write in: 
+        add_driver+=" vfio vfio_iommu_type1 vfio_pci vfio_virqfd "
+    sudo apt install dracut -y
+    sudo dracut -f --kver `uname -r`
+reboot
+
+
+Run checks:
+lsmod | grep kvm  # see that KVM is running
+cat /proc/cmdline  # see that the IOMMU settings in grub got integrated
+lspci -nnk  # see that you're using nvidia drivers and not nouveau
+
+
+# Installing dracut may or may not automatically set-up the following. At least check to make sure:
+#######################################################################################################################################
+# in /etc/libvirt/libvirtd.conf you need the following set / uncommented (write if nowhere to be found):
+unix_sock_group = "libvirt"
+unix_sock_rw_perms = "0770"
+log_filters="1:qemu"
+log_outputs="1:file:/var/log/libvirt/libvirtd.log"
+
+sudo usermod -a -G libvirt $(whoami)
+# enable and start systemd service libvertd
+sudo systemctl enable libvirtd 
+sudo systemctl start libvirtd 
+reboot
+
+# in /etc/libvirt/qemu.conf
+user = <yourusername>
+group = <yourusername>
+
+sudo systemctl restart libvirtd  # restart systemd service libvertd
+# add self to groups
+sudo usermod -a -G kvm $(whoami)
+sudo usermod -a -G libvirt $(whoami)
+reboot
+#######################################################################################################################################
+
+
+# vm setup:
+# =========
+
+download virtio guest-driver:  https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md
+
+Start Virtual Machine Manager
+    Edit > Preferences > General -> check "Enable XML editing"
+
+create new Windows instance from ISO. Set it up the way it sounds reasonable to you.
+    Important: on step 5 of 5, check "Customize configuration before install" so you can do the following steps.
+
+edit:
+Overview:
+    Change name
+    Make sure Chipset: Q35
+    Make sure Firmware: UEFI
+Overview(XML):
+    delete these 2 lines (taking one task off the CPU):    <timer name="rtc" tickpolicy="catchup"/>  ,  <timer name="pit" tickpolicy="delay"/>
+CPU:
+    Topology: 6 cores, 2 threads
+Memory:
+    16384 (about half what you have)
+[Attach new hardware: disk -> CD ROM -> get the VirtIO drivers (will be used for the installation to find the hard drive)]
+    It's possible to install on a regular disk, and convert it later (probably). 
+Boot Options:
+    Enable the installation CD and make it top priority
+Disk:
+    Disk bus: VirtIO
+    Cache mode: writeback
+Network: If installing regular edition windows, remove. will add back later (so Microsoft won't bother you with connecting an account)
+
+
+Install.
+If added virtIO disc already, install drivers from it (when you see no disk to install on, look for the Win10 compatibility driver within the VirtIO "CD-ROM")
+    If not, shut down, load it, install the drivers
+        Later set Disk(XML):
+            in target set bus="virtio"
+            in address set type="pci"
+shut down
+
+
+If removed Network, add back
+
+Remove installation ISO, virtIO drivers
+
+Prepare for driver installation:
+    Boot VM
+    If you want to debload your system, now's a good time.
+        Recommended: https://github.com/Sycnex/Windows10Debloater . To use:
+            Launch PowerShell as administrator (will be used for all the following)
+            You won't be permitted to run scripts, so run: "Set-ExecutionPolicy RemoteSigned" (press y on prompt)
+            run the github project's file GUI file: ".\Windows10DebloaterGUI.ps1" 
+    download GPU drivers
+    shut down
+
+
+
+# Case 1: hooks setup (you have 1 GPU, shared between host and guest):
+# ====================================================================
+
+
+Display:
+    Type: VNC server
+    Address: All interfaces
+    Password: (anything, maybe 7777. Some clients won't let you connect without password.)
+
+Boot the VM and see if you can access it via VNC from another computer on the same network (the address is the host computer, port is default: 5900)
+    run on host: "ip addr" or "ip addr | grep inet" to find address (the first connection for <BROADCAST,MULTICAST,UP,LOWER_UP> should be 192.168.XXX.XXX or 10.0.XXX.XXX)
+    You need a local VNC server. Suggestion: run "sudo apt install tightvncserver -y" on host, that'd be enough.
+    To connect with VNC from another device you'd need VNC Viewer or MobaXterm or some other client that can connect with VNC
+    You need to allow "incoming" in your host's firewall
+
+Clone the VM (just to be safe)
+
+Optional: open host to SSH connections. It's helpful for debugging the hook scripts and checking network status.
+    sudo apt install openssh-server -y  # you might need to install this if you don't have the service yet
+    sudo systemctl start sshd
+
+
+virsh (virt service) will automatically know where to look for the scripts that disconnect and reconnect the GPU. You just need to put those scripts in the right place
+
+# download the hooks scripts
+wget https://gitlab.com/risingprismtv/single-gpu-passthrough/-/archive/master/single-gpu-passthrough-master.tar.gz  # this repository has a discord link for help
+
+find within it the folder "hooks", and within, the files "vfio-startup", "vfio-teardown". Run the following commands to prepare vfio's mentioned folders:
+    VMName='win_10'  # Needs to be the same name as your made VM's
+    sudo mkdir -p /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/
+    sudo mkdir -p /etc/libvirt/hooks/qemu.d/${VMName}/release/end/
+    sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+        # paste the contents of vfio-startup
+    sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh
+        # paste the contents of vfio-teardown
+    sudo chmod +x /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+    sudo chmod +x /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh
+
+If your VM's disk is on a dismountable drive, the start hook might dismount it and cause add cause a failure to load (you'll be thrown back to login screen).
+    You can add 2 lines to remount within the start-script, at line 118, before the sleep that's before looking for nvidia services.
+        sudo mkdir <mountpoint>  # this you should already know, you chose the drive that'll host the disk
+        sudo mount /dev/<device> <mountpoint>  # run "lsblk" while your device is mounted to see which device you need (example: /dev/sda5)
+
+
+you should probably restart host at this point. Not sure.
+
+
+# running with hooks first time:
+# ------------------------------
+Add PCI device:
+    one for GPU video
+    one for GPU audio
+
+Boot the VM, connect to it through VNC (that saves you from downloading GPU ROM from online and modifying XMLs to have it loaded/accepted when starting up)
+Install the GPU drivers
+Shut down
+
+
+Clone the VM (just to be safe, again)
+
+Add Hardwares USB Host Device: mouse, keyboard
+
+Remove hardware: Tablet, Display VNC, Serial 1, Video QXL
+
+Boot the VM again to make sure there's no problem
+
+If all is well, clone the VM one last time, and delete the previous clones
+    The current configurations would probably stay as they are for a while, from now on safety "checkpoints" should be done through Snapshots
+
+
+Disallow "incoming" on firewall (a matter of security)
+
+sudo apt purge tightvncserver -y  # uninstall vnc-server
+
+Ask your parents for a 2nd GPU to regain the ability to still use Linux while using windows
+
+
+external references:
+https://www.youtube.com/watch?v=eTX10QlFJ6c
+https://www.youtube.com/watch?v=eTWf5D092VY
+https://www.youtube.com/watch?v=KVDUs019IB8
+
+https://github.com/joeknock90/Single-GPU-Passthrough
+https://passthroughpo.st/simple-per-vm-libvirt-hooks-with-the-vfio-tools-hook-helper/
+https://github.com/PassthroughPOST/VFIO-Tools
+
+
+
+
+# Case 2: dedicated GPU (you have an extra GPU for the guest-OS):
+# ===============================================================
+
+You need (at-least) 2 GPUs.
+One of them should be blacklisted.
+    In grub (/etc/default/grub) put in the video/audio ids (from "lspci -nn | grep NVIDIA") like so:
+        GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt iommu=1 kvm.ignore_msrs=1 vfio-pci.ids=10de:2204,10de:1aef"
+        then update of-course: sudo update-grub
+    In /etc/mondprobe.d/ add "vfio.conf" and have inside these lines (adapt the ids as needed):
+        options vfio-pci ids=10de:2204,10de:1aef
+        softdep nvidia pre: vfio-pci
+Maybe nouveau needs to be blacklisted too, probably not...
+
+Restart PC, make sure you're using the intended GPU.
+
+In VM Manager, add PCI device:
+    one for GPU video
+    one for GPU audio
+
+
+Change Video QXL to Model: None
+    This way you'll only have 1 screen; the one you output image to (which is at a higher resolution)
+
+Add Keyboard and Mouse to the VM
+
+Boot the VM, Install the GPU drivers, Shut down
+
+
+
+# Installing looking-glass:
+# -------------------------
+following: https://www.youtube.com/watch?v=wEhvQEyiOwI
+
+# Host-side
+Download latest Source from https://looking-glass.io/downloads
+Download this project: https://github.com/pavolelsig/L-G_helper
+
+extract both and put the looking-glass folder in the helper's folder 
+
+go into the helper and run:
+    chmod +x lg.sh
+    sudo ./lg.sh
+
+confirm prompts if you see no problem
+go to <helper_folder>/<looking-glass_folder>/client/build/  and take the compiled client "looking-glass-client" somewhere sensible, like to ${Home}/
+    sudo mv looking-glass-client ${HOME}/
+        You could also put it in "/usr/local/bin/" in the future, for automated usage
+
+
+# guest-vm client
+In the VM:
+make sure secure-boot is disabled in VM
+    go to Windows settings -> Recovery -> Advanced startup > Restart now
+    find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2
+    in the grey-blue configurations screen, go to Device Manager > Secure Boot Configuration -> "Attempt Secure Boot" should be disabled
+get the driver:  https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/upstream-virtio/
+get the windows client from the same version you took the host client: https://looking-glass.io/downloads
+install:
+    extract the driver and client
+    go to Device Manager > System devices -> PCI standard RAM Controller -> Update Driver -> Browse locally -> ( VirtIO -> Win10 -> amd64)
+    execute the windoes client exe to install it
+
+
+follow the instructions for your used version; https://looking-glass.io/docs/B5.0.1/install/   (docs hub: https://looking-glass.io/wiki/Installation_on_other_distributions)
+    just include the following (shared memory: you send the computed frames to your host's card) before the last closing </devices> tag:
+        <shmem name='looking-glass'>
+            <model type='ivshmem-plain'/>
+            <size unit='M'>32</size>
+        </shmem>
+    It's 32M for 1080p; should be 128M for 4K. Double it again if you want High Dynamic Range (HDR)
+    seemingly it's necessary that the VM options would have Video set to none (instead of QXL) and Display Spice set to Hypervisor default
+
+
+run the looking-glass-client file, add -F for full-screen
+    the VM needs to run so the client would find it
+    to configure, run "./looking-glass-client --help"
+    to debug, run "export SDL_VIDEO_X11_VISUAL_ID="  (details here:  https://forum.level1techs.com/t/looking-glass-triage/130952/1367  )
+
+
+external references:
+guide for Ubuntu - https://www.youtube.com/watch?v=ID3dlVHDl0c
+guide for KVM - https://www.youtube.com/watch?v=wEhvQEyiOwI
+running multiple VMs - https://www.youtube.com/watch?v=TMILDcOOOyY
+
+
+
+
+
+
+# TODO - remove any?: Tablet, Display Spice, Serial 1
+
+
+# Finishing touches
+# =================
+
+Save the VM's XML (won't be the last time)
+
+Make Network a virtio model
+
+If you don't want the OS to know it's in a VM (might affect cheat-engines), you need to apply these XML changes:
+    below </features>:   
+        <cpu mode='host-model' check='partial'>
+          <model fallback='allow'/>
+          <feature policy='disable' name='hypervisor'/>
+        </cpu>
+    slightly above, right below </hyperv> that's in <features>
+        <kvm>
+          <hidden state='on'/>
+        </kvm>
+    Be aware that CPU changes can brick the guest OS.
+    If you changed it and it works, copy XML again
+
+Untested: Mutahar demonstrated that these 4 lines inside <hyperv> tag can help bypass Valorant's anti-cheat
+    <vpindex state="on"/>
+    <runtime state="on"/>
+    <synic state="on"/>
+    <stimer state="on"/>
+    <reset state="on"/>
+    <frequencies state="on"/>
+And in the Windows VM, go to "Turn Windows features on or off", and enable HyperV (both Management Tools and Platform)
+
+
+
+
+
+
+
+
+
+Evdev Mouse/Keyboard sharing (use with looking-glass):
+======================================================
+
+Download EVdev helper: https://github.com/pavolelsig/evdev_helper/blob/main/README.md
+Note that EVdev creates XML configs according to your connected hardware - make sure that (only) the mouse and keyboard you need are plugged in (rerun it if your setup changes).
+Extract, and run main script.
+    chmod +x run_ev_helper.sh
+    sudo ./run_ev_helper.sh       # OR      sudo ./run_ev_helper.sh by-path
+        # So you can reference your hardware by ID or by path. You may choose one instead of the other.
+    cat evdev.txt  # get the text from the previous run's output
+
+Review the found hardware - don't include the unwanted (repeated or accidentally-plugged hardware)
+
+Paste the output into your VM's XML.
+    Make sure to paste the 2 segments before applying, or the VM Manager might change the single-addition automatically.
+    The first line goes instead of the XML's first line
+    The <qemu:commandline> tag section goes before the very end, above the </domain> tag
+
+
+Edit (sudo) qemu conf: /etc/libvirt/qemu.conf
+    Make sure that at the end the device-ACL isn't listed more than once. Delete the extras if necessary
+    The script probably added user and group definition as "root". Delete these 2 definitions.
+
+If you went by the above setup, your own user is mentioned in the conf file; give it the necessary access to the hardware
+    usermod -aG input "$(whoami)"
+    systemctl restart libvirtd  # apply changes
+
+
+external references:
+https://www.youtube.com/watch?v=4XDvHQbgujI
+https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/
+
+
+
+
+
+Scream audio sharing (use with looking-glass):
+==============================================
+
+host-client
+-----------
+Scream: https://github.com/duncanthrax/scream
+
+download and extract project
+go to Receivers/unix (used to be directly in receivers) and open the README.md
+As instructed, install the necessary library; we'll be using PulseAudio:
+    sudo apt install libpulse-dev make -y
+    mkdir build && cd build
+    cmake ..
+    make
+    sudo make install
+
+run this: "scream -i virbr0 -p 4011 -u"  # 4011 is a standard port. The default according to the wiki is 4010.
+    You can set this as a service (auto-running) later, for now you want to see audio samples on the terminal in real-time (once client side is set-up)
+    make sure you're using the right interface (for -i). run: sudo ifconfig -a
+        Write down (or keep open) the (inet) address of virbr0, you'll need it for the guest
+
+Open Firewall and add a rule that allows in audio through network.
+    Add "simple" rule: on UDP on ports 4010:4015 (allowing several, in case you'd want to have several VM streaming-in)
+    You should keep the general Incoming: Deny
+
+You can add scream to startup (do it once you confirm everything works)
+    It'll write a new file in the following directory: ~/.config/autostart/
+    Just tell it to run "scream -i virbr0 -p 4011 -u". Should be fine to run at 15s delay.
+    Reboot and see that you have "Scream" at Sounds > Applications (and that your VMs still output the sounds to your host)
+
+
+guest-client
+------------
+make sure secure-boot is disabled for guest VM
+
+Download (in VM) Scream for guest client (binaries zip):  https://github.com/duncanthrax/scream/releases
+    extract, and run "install" as administrator
+
+Pick (in guest VM) "Speakers (Scream (WDMI))" from the bottom-right sounds menu
+Go to Device Manager > "Sound, video and game controllers" and disable devices other thatn Scream
+Play something to see if you can hear.
+
+If you can't hear, try modifying registry:
+in guest-VM, run regedit, go to Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Scream
+    Add Key (folder) called "Options"
+    Within the new folder:
+        add new String called "UnicastIPv4", give it the host address
+        add new DWORD-32-bit called "UnicastPort" and set it to 4011 Decimal
+Restart guest and check audio again
+
+
+Consider changing sample rate in Sound, for different sound-quality and strain on the network.
+    I put mine on 32 bit, 96000Hz. Wiki recommends 16bit 48000Hz if you want 5.1+ channel modes
+        One of the VMs had noises while set on 32 bit 48k, it was solved when I changed it to 96k. Then on another run it had noises again, which stopped when set back to 32bit 48k.
+
+
+reference: https://www.youtube.com/watch?v=AfUgNEOx3uk
+
+
+Security checks:
+================
+Host (in)access check:
+    In VM, run (in CMD): ipconfig/all
+    Try to SSH to host (Default Gateway)  -  obviously you want there to be no response
+    Remember to have SSH-server running on host for this check
+        netstat -ln | grep :22  # check if you're listening on host
+        sudo systemctl start sshd  # start the service if it's not already running
+
+Check if the CPU is written as virtual in guest VM (detectable by anti-cheat)
+    Check in Task Manager > Performance. See if the CPU is "virtual".
+    There's a fix through the modification of the cpu tag, mentioned above. Should solve the problem if you encounter it.
+
+Run these to see if the OS is aware it's in a VM:
+    WMIC COMPUTERSYSTEM GET MANUFACTURER 
+    WMIC COMPUTERSYSTEM GET MODEL 
+    WMIC BIOS GET SERIALNUMBER
+
+
+
+
+The solution to the vendor problem seems to be something like(?):
+
+ <bios>
+      <entry name='vendor'>Dell Inc.</entry>
+      <entry name='version'>2.8.0</entry>
+      <entry name='date'>04/01/2020</entry>
+      <entry name='release'>2.8</entry>
+    </bios>
+    <system>
+      <entry name='manufacturer'>Dell Inc.</entry>
+      <entry name='product'>PowerEdge R640</entry>
+      <entry name='version'>Not Specified</entry>
+      <entry name='serial'>5K1234</entry>
+      <entry name='uuid'>da1f922f-468e-4eba-8f7d-08fd1ae31246</entry>
+      <entry name='sku'>SKU=1234;ModelName=PowerEdge R640</entry>
+      <entry name='family'>PowerEdge</entry>
+    </system>
+    <baseBoard>
+      <entry name='manufacturer'>Dell Inc.</entry>
+      <entry name='product'>12NR12</entry>
+      <entry name='version'>A02</entry>
+      <entry name='serial'>.5KT0B123.ABCDE000000001.</entry>
+      <entry name='asset'>Not Specified</entry>
+    </baseBoard>
+  </sysinfo>
+or 
+  <os>
+    ...
+    <smbios mode='host'/>
+  </os>
+
+
+
+set this (in <features>) runtime optimization according to:  https://www.youtube.com/watch?v=kAgIQGZUIP0
+<hyperv>
+    <relaxed state='on'/>
+    <vapic state='on'/>
+    <spinlocks state='on' retries='4096'/>
+    <vpindex state='on'/>
+    <runtime state='on'/>
+    <synic state='on'/>
+    <stimer state='on'>
+      <direct state='on'/>
+    </stimer>
+    <reset state='on'/>
+    <vendor_id state='on' value='PC'/>
+    <frequencies state='on'/>
+    <reenlightenment state='on'/>
+  </hyperv>
+
+

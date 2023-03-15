@@ -1,0 +1,348 @@
+check pull requests (script fixes)
+
+# check if that last device I didn't clear away is the cause of the problem
+# check if I needed to add that other line to the other PCIe device
+
+look for tutorials (videos?) for passing GPU through hook to VMs
+
+
+
+Check in logs:  /var/log/libvirt/libvirtd.log
+Maybe the VM NEEDS to be uefi exactly (unlike win_10) - try changing the hooks to the older machine by renaming the folders
+try explicitly telling the hooks to mess with the GPU IDs
+    VMName='win_10'
+    sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+    sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh
+
+Another tutorial (Ubuntu):
+https://www.youtube.com/watch?v=eTX10QlFJ6c
+
+# in /etc/default/grub  changed to this line:  
+GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt iommu=1 video=efifb:off"
+
+# install these packages:
+sudo apt install qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virt-manager ovmf
+
+# in /etc/libvirt/libvirtd.conf you need the following set / uncommented (write if nowhere to be found):
+unix_sock_group = "libvirt"
+unix_sock_rw_perms = "0770"
+log_filters="1:qemu"
+log_outputs="1:file:/var/log/libvirt/libvirtd.log"
+
+sudo usermod -a -G libvirt $(whoami)
+# enable and start systemd service libvertd
+sudo systemctl enable libvirtd 
+sudo systemctl start libvirtd 
+reboot
+
+# in /etc/libvirt/qemu.conf
+user = <yourusername>
+group = <yourusername>
+
+sudo systemctl restart libvirtd  # restart systemd service libvertd
+# add self to groups
+sudo usermod -a -G kvm $(whoami)
+sudo usermod -a -G libvirt $(whoami)
+reboot
+
+install VM (same as other tutorials: Q35 and UEFI)
+remove unnecessary "hardware" in VM: Tablet, Display Spice, Serial 1, Channel Spice, Video QXL
+add GPU video + audio to hardware
+add keyboard + mouse
+
+# hooks - using startup/teardown from:  https://gitlab.com/risingprismtv/single-gpu-passthrough
+
+
+Going by:
+https://www.youtube.com/watch?v=eTWf5D092VY
+
+# from other tutorial
+The following applies for an AMD CPU; Make sure in BIOS that:         [can be automated to a few commands and an if statement that quits]
+    CSM (Boot) is disabled (so UEFI mode is used)
+    IOMMU (CPU) is enabled
+    NX (CPU) is enabled
+    SVM (CPU) is enabled
+
+install packages:   sudo apt update && sudo apt install qemu-kvm qemu libvirt-clients libvirt-daemon-system bridge-utils virt-manager ovmf -y  # from other tutorial
+    reboot
+configure iommu
+    sudo nano /etc/default/grub
+        set (alter) this line: GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt"
+    run update command: "sudo update-grub"
+
+added drivers to (mit?)-RAM-FS using dracut:  (explanations here:   https://www.youtube.com/watch?v=3OdlPmPbLII&t=270s )
+    sudo mkdir -p /etc/dracut.conf.d/
+    sudo nano /etc/dracut.conf.d/local.conf      #   write in: 
+        add_driver+=" vfio vfio_iommu_type1 vfio_pci vfio_virqfd "
+    sudo apt install dracut -y
+    sudo dracut -f --kver `uname -r`
+    reboot
+
+# check if things are enabled as they should be
+lsmod | grep kvm  # should give 3 lines, 2 bottom ones have "1" (enabled?)
+cat /proc/cmdline
+lspci -nnk
+
+download virtio guest-driver:  https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md
+install windows 10 in qemu, set it to Q35 UEFI
+mount virtio image on the vm as cd-rom, boot into windows, install the drivers on it
+Edit: Display Spice -> make it Type "VNC server" and Address "All interfaces"  (while network is on model e1000e)
+    boot in again to see everything is working
+on host, run: "ip addr | grep inet" to find address (the first connection for <BROADCAST,MULTICAST,UP,LOWER_UP> should be 192.168.XXX.XXX or 10.0.XXX.XXX)
+    sudo apt install tightvncserver  # host OS NEEDS to have a vnc client present
+    connect to the client through VNC on any computer (including phone) that's on the same network
+Setting up hooks by this repo's instructions  https://github.com/joeknock90/Single-GPU-Passthrough  https://passthroughpo.st/simple-per-vm-libvirt-hooks-with-the-vfio-tools-hook-helper/  https://github.com/PassthroughPOST/VFIO-Tools  which basically say:
+    sudo wget 'https://raw.githubusercontent.com/PassthroughPOST/VFIO-Tools/master/libvirt_hooks/qemu' -O /etc/libvirt/hooks/qemu
+    sudo chmod +x /etc/libvirt/hooks/qemu
+    sudo service libvirtd restart
+    VMName='win_10'
+    sudo mkdir -p /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/
+    sudo mkdir -p /etc/libvirt/hooks/qemu.d/${VMName}/release/end/
+
+    # THE FOLLOWING PART WORKS MUCH BETTER WITH THE OTHER REPOSITORY'S STARTUP/TEARDOWN SCRIPTS! THESE SCRIPTS HERE RETURN THE SYSTEM IN A STATE THAT GETS STUCK AFTER A COUPLE OF MINUTES
+    sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+        # paste the "Start Script" from https://github.com/joeknock90/Single-GPU-Passthrough#start-script
+    sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh
+        # paste the "Stop Script" from https://github.com/joeknock90/Single-GPU-Passthrough#vm-stop-script
+    sudo chmod +x /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+    sudo chmod +x /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh
+    lspci -nnk | grep NVIDIA  # get the addresses of your GPU - it should be on the left side, written like "0b:00.1"
+        sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh  # write the addresses in the "Unbind the GPU" section; all lines should be like "virsh nodedev-detach pci_0000_0b_00_1"
+        sudo nano /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh  # do the same in Re-Bind GPU section, preferably from end to start
+    sudo systemctl start sshd  # we'll need terminal access to host
+        sudo apt install openssh-server -y  # you might need to install this if you don't have the service yet
+    ssh into host from another computer ( ssh <username@address> ) with the same address found before
+        # check access to necessary files, and have access to the original youtube tutorial of this file
+        VMName='win_10'
+        ll /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+        ll /etc/libvirt/hooks/qemu.d/${VMName}/release/end/revert.sh
+        # run unbind
+        sudo /etc/libvirt/hooks/qemu.d/${VMName}/prepare/begin/start.sh
+        # see if it fails to unbind the GPU. If it does, CTRL+C the process, and run:
+        lsmod | grep nvidia
+        add to the unbind (start) script the modules under "Stop display manager" things like:
+            sudo rmmod nvidia_drm && sudo rmmod nvidia_uvm && sudo rmmod nvidia_modeset && sudo rmmod nvidia
+
+
+
+
+
+trying: 
+https://www.youtube.com/watch?v=KVDUs019IB8
+
+
+    The following applies for an AMD CPU; Make sure in BIOS that:         [can be automated to a few commands and an if statement that quits]
+        CSM (Boot) is disabled (so UEFI mode is used)
+        IOMMU (CPU) is enabled
+        NX (CPU) is enabled
+        SVM (CPU) is enabled
+    Edit grub:  sudo nano /etc/default/grub
+        add the following arguments into GRUB_CMDLINE_LINUX_DEFAULT: "amd_iommu=on iommu=pt video=efifb:off"             [can be automated with a 'sed' command]
+            Should end up looking like this for AMD GPU:   GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amd_iommu=on iommu=pt video=efifb:off"
+            Should end up looking like this for Nvidia GPU:    GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amd_iommu=on iommu=pt nomodeset"
+        run "sudo update-grub" to apply the changes
+        reboot
+    check pci devices:
+        lspci -nn | grep "NVIDIA"  # write down the device ids that's within the brackets
+    add the ids of visual and audio into the grub definition in "vfio-pci.ids", should end up like that (maybe without the iommu=pt?):
+        GRUB_CMDLINE_LINUX_DEFAULT="quiet splash amd_iommu=on iommu=pt vfio-pci.ids=10de:2204,10de:1aef"
+!            changed to (removed quiet for the sake of debugging): "splash amd_iommu=on iommu=pt vfio-pci.ids=10de:2204,10de:1aef"
+!    might be a problem: he has "resume=UUID=......" in his definition, I don't!
+
+    runs:  sudo grub-mkconfig -o .boot/grub/grub.cfg
+!        my previous instructions just specified "sudo update-grub" but it seems to do fine
+    reboot again
+    
+    Check that the IOMMU groups are valid by running and take note of the number of every GPU group:  (I saved the script into bashrc as function "print_iommu_groups")       [can be automated with a 'sed' command]
+        #!/bin/bash
+        shopt -s nullglob
+        for g in /sys/kernel/iommu_groups/*; do
+            echo "IOMMU Group ${g##*/}:"
+            for d in $g/devices/*; do
+                echo -e "\t$(lspci -nns ${d##*/})"
+            done;
+        done;
+    install Libvirt and qemu:
+        sudo apt update && sudo apt install qemu-kvm qemu libvirt-clients libvirt-daemon-system bridge-utils virt-manager ovmf -y
+        edit libvirtd.conf:  sudo nano /etc/libvirt/libvirtd.conf
+            uncomment:          [can be automated with a 'sed' command]
+                unix_sock_group = "libvirt"       (for me it's in line 81)
+                unix_sock_rw_perms = "0770"       (for me it's in line 104)
+            append to the end of the file:          [can be automated with a >> stream into file]
+                log_filters="1:qemu"
+                log_outputs="1:file:/var/log/libvirt/libvirtd.log"
+        assign yourself to the libvirt group:  sudo usermod -a -G kvm,libvirt $(whoami)          [can be checked with "sudo groups $(whoami)" and quit if the group isn't there]
+        start libvirtd in systemctl:
+            sudo systemctl start libvirtd
+            sudo systemctl enable libvirtd
+        edit qemu.conf:  sudo nano /etc/libvirt/qemu.conf
+            change '#user = "root"' to 'user = "your-username"'    (ignore the single quotes, but the double quotes are important)         [can be automated with sed, and the whoami command]
+            change '#group = "root"' to 'group = "your-username"'    (ignore the single quotes, but the double quotes are important)         [can be automated with sed, and the whoami command]
+        restart libvirt:   sudo systemctl restart libvirtd
+            (I'd recommend also running "sudo systemctl status libvirtd" to check on it)
+        configure virsh internal network to run automatically on startup:  "sudo virsh net-autostart default"
+    Configure VM Manager to run Win10:
+        install (or not, in most distros. just downloading is fine?) virtio-win drivers:  wget https://fedorapeople.org/groups/virt/virtio-win/virtio-win.repo -O /etc/yum.repos.d/virtio-win.repo
+            Download ISO from here: https://github.com/virtio-win/virtio-win-pkg-scripts/blob/master/README.md
+            Store it somewhere (remember where, for later)
+        Open Virtual Machine Manager
+        Edit > Preferences > General -> check "Enable XML editing"
+        Start creating a new VM
+            Give it an ISO (from Microsoft's site)
+            Give it about half your RAM and CPU cores.
+            When configuring storage, unless you want it to write locally, browse for your desired partition by clicking the + on the bottom-left
+                After that, choose your added partition and create a qcow volume with the desired volume
+            Important: on step 5 of 5, check "Customize configuration before install"
+        At the screen before installation:
+            Overview -> XML:
+                delete these 2 lines:    <timer name="rtc" tickpolicy="catchup"/>  ,  <timer name="pit" tickpolicy="delay"/>
+                change the nearby "hpet" present value to "yes"
+            Overview: make sure Chipset is Q35 , and make sure Firmware is UEFI or some other UEFI option like: "/usr/share/OVMF/OVMF_CODE_4M.fd" (I'm very unsure if either works; picked "UEFI")
+            CPUs: Check both boxes and set sockets=1 (unless you have more than 1 seated CPU), cores=[num-of-your-cpu's-cores], threads=[threads-per-core,probably 2]
+            Disk: Set Disk bus to VirtIO , Cache mode: writeback
+            Add Hardware -> 
+                change to CD-ROM and confirm 
+                Configure the new hardware SATA CDROM to point to the downloaded VirtIO ISO
+            Boot Options: check both SATA CDROM (Windows ISO and VirtIO ISO). Of course VirtIO disk still needs to be checked too.
+            NIC (network): change device model to "virtio". Network source should be set to "Virtual network 'default':NAT"
+            Install Windows:
+                (if you need to leave the VM window press the left CTRL+ALT)
+                If prompted to press anything to load from media drives, press something
+                Custom install
+                When choosing disks click Load Driver > choose the one that fits you
+                The Virtio disk you created earlier would be visible with the same amount of available space. Choose it and finish the installation
+                To grant internet access (if missing), inside the VM go to Device Manage:
+                    find Ethernet Controller (if you only find "RedHat", delete it, it'll take its place)
+                    Right click > Update Driver > Browse Computer -> give it the virtio "disc" dir / NetKVM / w10 / {your cpu architecture}
+            Dump and prepare ROM file for Nvidia:
+                CANCELLED, got an error: download nvidia nvflash:  https://www.techpowerup.com/download/nvidia-nvflash/
+                Download a fitting ROM online, from: https://www.techpowerup.com/vgabios/
+                edit the file with hex editor (I found one online: https://hexed.it/ )
+                    Find the string "video". You'll see that the same row starts with 'U'
+                    Mark and remove the whole chunk above that line - all lines until the first upper-left "00" (including)
+                Save the edited file:
+                    rom_filename="RTX3090_edited.rom"
+                    sudo mkdir /usr/share/vgabios
+                    sudo mv "$rom_filename" /usr/share/vgabios/
+                    sudo chmod 660 "/usr/share/vgabios/$rom_filename"
+                    sudo chown $(whoami):$(whoami) "/usr/share/vgabios/$rom_filename"
+            Scripts and logfiles:
+                download a specific scripts repository:
+                    wget https://gitlab.com/risingprismtv/single-gpu-passthrough/-/archive/master/single-gpu-passthrough-master.tar.gz  # this repository has a discord link for help
+                    tar xvzf "single-gpu-passthrough-master.tar.gz"
+                    cd single-gpu-passthrough-master
+                    sudo cp -r hooks/ /etc/libvirt/
+                    sudo ./install_hooks.sh
+                VM Devices changes:
+                    Add 2 more hardwares of type "PCI Host Device" to your VM. GPU video and GPU audio
+                        to the video one(or both?), add to the XML the tag: <rom file="/usr/share/vgabios/<romfilename>"/> (example: <rom file="/usr/share/vgabios/RTX3090_edited.rom"/> ). You can put it below </source>
+                    Add 2 USB devices: Mouse and Keyboard
+                    Remove VM devices "Display Spice", "Video QXL"  (and "Channel spice"?)
+                VM XML change:
+                    edit the XML of your VM (has to be called "win10") either by running " sudo virsh edit win10" or by editing it in Virtual Machine Manager > (instance) > Overview > XML tab
+                    the xml has to have the following line sequence:
+                         </os>
+                          <features>
+                            <acpi/>
+                            <apic/>
+                            <hyperv>
+                              <relaxed state="on"/>
+                              <vapic state="on"/>
+                              <spinlocks state="on" retries="8191"/>
+                              <vendor_id state="on" value="123456789123"/>
+                            </hyperv>
+                            <kvm>
+                              <hidden state="on"/>
+                            </kvm>
+                            <vmport state="off"/>
+                            <ioapic driver="kvm"/>
+                    
+                    the xml has to have the following line sequence (for AMD CPU) (no need to overwrite topology line):
+                        </features>
+                          <cpu mode='host-passthrough' check='none'>
+                            <topology sockets='1' cores='6' threads='2'/>
+                            <feature policy='require' name='topoext'/>
+                          </cpu>
+
+                    the xml has to have the following line (allowing to make snapshots edit):  (I don't have either of them, don't know where to put them)
+                        <loader readonly='yes' type='rom'>/usr/share/edk2-ovmf/x64/OVMF_CODE.fd</loader>
+                        instead of: <loader readonly='yes' type='pflash'>/usr/share/edk2/ovmf/OVMF_CODE.fd</loader>
+
+
+
+
+
+
+
+
+
+
+
+
+
+Start Script   /etc/libvirt/hooks/qemu.d/{VMName}/prepare/begin/start.sh
+============
+#!/bin/bash
+# Helpful to read output when debugging
+set -x
+
+# Stop display manager
+systemctl stop display-manager.service
+## Uncomment the following line if you use GDM
+#killall gdm-x-session
+# sudo rmmod nvidia_drm && sudo rmmod nvidia_uvm && sudo rmmod nvidia_modeset && sudo rmmod nvidia
+
+# Unbind VTconsoles
+echo 0 > /sys/class/vtconsole/vtcon0/bind
+echo 0 > /sys/class/vtconsole/vtcon1/bind
+
+# Unbind EFI-Framebuffer
+echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
+
+# Avoid a Race condition by waiting 2 seconds. This can be calibrated to be shorter or longer if required for your system
+sleep 2
+
+# Unbind the GPU from display driver
+virsh nodedev-detach pci_0000_0c_00_0
+virsh nodedev-detach pci_0000_0c_00_1
+
+# Load VFIO Kernel Module  
+modprobe vfio-pci  
+
+
+
+
+
+VM Stop script   /etc/libvirt/hooks/qemu.d/{VMName}/release/end/revert.sh
+==============
+#!/bin/bash
+set -x
+  
+# Re-Bind GPU to Nvidia Driver
+virsh nodedev-reattach pci_0000_0c_00_1
+virsh nodedev-reattach pci_0000_0c_00_0
+
+# Reload nvidia modules
+modprobe nvidia
+modprobe nvidia_modeset
+modprobe nvidia_uvm
+modprobe nvidia_drm
+
+# Rebind VT consoles
+echo 1 > /sys/class/vtconsole/vtcon0/bind
+# Some machines might have more than 1 virtual console. Add a line for each corresponding VTConsole
+#echo 1 > /sys/class/vtconsole/vtcon1/bind
+
+nvidia-xconfig --query-gpu-info > /dev/null 2>&1
+echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+
+# Restart Display Manager
+systemctl start display-manager.service
+
+
+
+
+
+
+
+

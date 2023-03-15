@@ -1,0 +1,92 @@
+
+Hooks problem:
+The start hook dismounts the drive where the qemu disks are located, so remount it towards the end of the script, 
+    before the 'sleep "1"' line that's before the line 'if lspci -nn | grep -e VGA | grep -s NVIDIA ; then'
+
+sudo mkdir "/media/$(whoami)/OpsStorage/"
+sudo mount -t ntfs-3g /dev/sda8 "/media/$(whoami)/OpsStorage/"
+
+
+
+
+---------------------------------------------------------------------------------------------
+
+Windows might know it's in a VM.
+Go to task-manager -> resources tab -> on the lower right-side it mentions number of virtual CPUs and whether it's a VM
+
+(below </features>)
+
+<cpu mode='host-model' check='partial'>
+    <model fallback='allow'/>
+    <feature policy='disable' name='hypervisor'/>
+  </cpu>
+
+
+and (slightly above, below </hyperv> that's in <features> )
+
+  <kvm>
+    <hidden state='on'/>
+  </kvm>
+
+changing cpu setting can brick windows
+
+---------------------------------------------------------------------------------------------
+
+Crackling noises fix:  (fix explained here:   https://mathiashueber.com/virtual-machine-audio-setup-get-pulse-audio-working/  )
+sudo nano /etc/pulse/daemon.conf    # make sure those 2 lines are in (uncommented):
+    default-sample-rate = 44100
+    alternate-sample-rate = 48000
+
+pulseaudio -k  # apply the changes
+
+virsh edit <vm-name>  # OR (better) go to Virtual Machine Manager, and open the VM's Overview XML
+    set this:  <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>  instead of this:   <domain type='kvm'>
+    to pass to the audio-jack, at the end make sure that "qemu:commandline" tag includes the following (and if it's not there, paste the following below </devices>)
+        <qemu:commandline>
+          <qemu:arg value='-device'/>
+          <qemu:arg value='ich9-intel-hda,bus=pcie.0,addr=0x1b'/>
+          <qemu:arg value='-device'/>
+          <qemu:arg value='hda-micro,audiodev=hda'/>
+          <qemu:arg value='-audiodev'/>
+          <qemu:arg value='pa,id=hda,server=unix:/run/user/1000/pulse/native,out.mixing-engine=off'/>       # or maybe <qemu:arg value='pa,id=hda,server=unix:/run/user/1000/pulse/native'>
+        </qemu:commandline>
+    alternatively this for usb-audio (DAC):  (maybe. I already gave up and started listening to my GPU through the screen)
+        <qemu:commandline>
+          <qemu:arg value="-device"/>
+          <qemu:arg value="usb-audio,audiodev=usbaudio,multi=on"/>
+          <qemu:arg value="-audiodev"/>
+          <qemu:arg value="pa,id=usbaudio,server=unix:/run/user/1000/pulse/native,out.mixing-engine=off"/>
+        </qemu:commandline>
+    note: the "1000" in the last line is your user-id (as the first user on this OS). It won't work if that's not you.
+
+disconnect any extra audio-output devices
+
+sudo nano /etc/apparmor.d/abstractions/libvirt-qemu  # open apparmor - you can just edit it in a text editor (like VSCode) that can prompt for sudo pass
+  make sure these lines are in:
+    /etc/pulse/client.conf.d/ r,
+    /etc/pulse/client.conf.d/* r,
+    /run/user/1000/pulse/native rw,
+    @{HOME}/.config/pulse/* r,
+    @{HOME}/.config/pulse/cookie k,
+
+
+
+---------------------------------------------------------------------------------------------
+
+
+Corsair keyboard not running in guest OS:
+
+terminating CKB (usually?) solves this
+reinstalling (remove+install) CKB-Next might solve this
+
+
+---------------------------------------------------------------------------------------------
+
+On the issue of lost sessions in 1-GPU systems (doesn't work well so far)
+"You could try installing dconf sudo apt-get install dconf-editor and add "auto-save-session" in /org/cinnamon/cinnamon-session/
+Then add logout in the hook before killing the GPU."
+
+
+
+
+

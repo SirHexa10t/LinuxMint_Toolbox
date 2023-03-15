@@ -1,0 +1,4 @@
+https://askubuntu.com/questions/719390/blacklist-a-nvidia-gpu-for-qemu-kvm-passthrough
+
+maybe relevant:
+https://www.heiko-sieger.info/passing-through-a-nvidia-rtx-2070-super-gpu/
