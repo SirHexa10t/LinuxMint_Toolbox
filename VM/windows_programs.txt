@@ -1,0 +1,70 @@
+A program-suggstion list for Windows in VM.
+
+
+Social and Internet
+-------------------
+
+Signal - same as WhatsApp, but not spying on you
+
+Discord - game-centered chats. DOES spy on you; use through a private browser if possible.
+
+Brave - Chromium privacy-oriented web-browser
+
+LibreWolf - Firefox privacy-oriented web-browser
+
+
+
+Media and readers
+-----------------
+
+VLC - videos player
+
+Foobar2000 - music library
+
+WinRAR - archive writer/reader
+
+Notepad++ - best text editor
+
+
+
+Benchmarking
+------------
+
+Unigine_Superposition
+
+
+
+Gaming
+------
+
+Logitech Gaming Software - manage Logitech mouse/keyboard macros and profiles
+
+Parsec - stream control input and visual feedback over network. Basically Google Stadia but on your own Windows PC as the server.
+
+Steam - games store + library
+
+EpicGames client - a source for a new free game every week
+
+LDPlayer - Android emulator for games
+
+
+
+VR Gaming
+---------
+
+ALVR - PCVR connection ; replaces Oculus software
+
+SideQuest - connect to Oculus device and offload programs (or generally manage it with any sent command)
+
+ModAssistant - mods manager for BeatSaber
+
+
+
+Security
+--------
+
+NordVPN - VPN which supposedly isn't obligated to turn your data in by request of the US govt.
+
+
+
+
