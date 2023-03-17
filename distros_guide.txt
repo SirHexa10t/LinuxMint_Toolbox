@@ -18,7 +18,7 @@ Gentoo - Like Arch but more extreme
 
 Alpine - very light and minimalistic (supports run-from-RAM), great for microservices and dockerized server stuff
 
-
+NixOS - ?
 
 
 

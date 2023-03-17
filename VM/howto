@@ -125,7 +125,7 @@ Prepare for driver installation:
 
 # Case 1: hooks setup (you have 1 GPU, shared between host and guest):
 # ====================================================================
-
+The hooks are basically scripts which arrange the desired conditions bafore and after a VM's run. Terminate graphical (and generally GPU) activity before, and restore your environment after.
 
 Display:
     Type: VNC server
@@ -243,6 +243,7 @@ Boot the VM, Install the GPU drivers, Shut down
 
 # Installing looking-glass:
 # -------------------------
+Running the VM within a window.
 following: https://www.youtube.com/watch?v=wEhvQEyiOwI
 
 # Host-side
@@ -311,47 +312,9 @@ running multiple VMs - https://www.youtube.com/watch?v=TMILDcOOOyY
 
 
 
-
-
-# Finishing touches
-# =================
-
-Save the VM's XML (won't be the last time)
-
-Make Network a virtio model
-
-If you don't want the OS to know it's in a VM (might affect cheat-engines), you need to apply these XML changes:
-    below </features>:   
-        <cpu mode='host-model' check='partial'>
-          <model fallback='allow'/>
-          <feature policy='disable' name='hypervisor'/>
-        </cpu>
-    slightly above, right below </hyperv> that's in <features>
-        <kvm>
-          <hidden state='on'/>
-        </kvm>
-    Be aware that CPU changes can brick the guest OS.
-    If you changed it and it works, copy XML again
-
-Untested: Mutahar demonstrated that these 4 lines inside <hyperv> tag can help bypass Valorant's anti-cheat
-    <vpindex state="on"/>
-    <runtime state="on"/>
-    <synic state="on"/>
-    <stimer state="on"/>
-    <reset state="on"/>
-    <frequencies state="on"/>
-And in the Windows VM, go to "Turn Windows features on or off", and enable HyperV (both Management Tools and Platform)
-
-
-
-
-
-
-
-
-
-Evdev Mouse/Keyboard sharing (use with looking-glass):
-======================================================
+# Evdev Mouse/Keyboard sharing (use with looking-glass; useful when using a dedicated monitor too):
+# -------------------------------------------------------------------------------------------------
+Enable pressing both CTRL keys to switch hardware input between guest or host
 
 Download EVdev helper: https://github.com/pavolelsig/evdev_helper/blob/main/README.md
 Note that EVdev creates XML configs according to your connected hardware - make sure that (only) the mouse and keyboard you need are plugged in (rerun it if your setup changes).
@@ -386,11 +349,12 @@ https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/
 
 
 
-Scream audio sharing (use with looking-glass):
-==============================================
+# Scream audio sharing (use with looking-glass):
+# ----------------------------------------------
+Pass back audio through network
 
-host-client
------------
+# host-client
+# -----------
 Scream: https://github.com/duncanthrax/scream
 
 download and extract project
@@ -417,8 +381,8 @@ You can add scream to startup (do it once you confirm everything works)
     Reboot and see that you have "Scream" at Sounds > Applications (and that your VMs still output the sounds to your host)
 
 
-guest-client
-------------
+# guest-client
+# ------------
 make sure secure-boot is disabled for guest VM
 
 Download (in VM) Scream for guest client (binaries zip):  https://github.com/duncanthrax/scream/releases
@@ -445,8 +409,48 @@ Consider changing sample rate in Sound, for different sound-quality and strain o
 reference: https://www.youtube.com/watch?v=AfUgNEOx3uk
 
 
-Security checks:
-================
+
+
+
+
+
+# Finishing touches (applies to both hooks and dedicated-GPU)
+# =================
+
+Save the VM's XML
+
+Make Network a virtio model
+
+If you don't want the OS to know it's in a VM (might affect cheat-engines), you need to apply these XML changes:
+    below </features>:   
+        <cpu mode='host-model' check='partial'>
+          <model fallback='allow'/>
+          <feature policy='disable' name='hypervisor'/>
+        </cpu>
+    slightly above, right below </hyperv> that's in <features>
+        <kvm>
+          <hidden state='on'/>
+        </kvm>
+    Be aware that CPU changes can brick the guest OS.
+    If you changed it and it works, copy XML again
+
+Untested: Mutahar demonstrated that these 4 lines inside <hyperv> tag can help bypass Valorant's anti-cheat
+    <vpindex state="on"/>
+    <runtime state="on"/>
+    <synic state="on"/>
+    <stimer state="on"/>
+    <reset state="on"/>
+    <frequencies state="on"/>
+And in the Windows VM, go to "Turn Windows features on or off", and enable HyperV (both Management Tools and Platform)
+
+
+
+
+
+
+
+# Security checks:
+# ================
 Host (in)access check:
     In VM, run (in CMD): ipconfig/all
     Try to SSH to host (Default Gateway)  -  obviously you want there to be no response
