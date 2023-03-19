@@ -1,24 +1,95 @@
 
 # Feel free to ignore this file, it's a work in progress, still in the data-aggregation phase
 
-OpenSUSE Tumbleweed - rolling versions, but still stable. Can switch flavors easily!
+Basically there are 3 primary groups of desktop distros (which use different package managers): Debian (apt), Arch (pacman), Fedora (dnf)
+Some distros come with specially-made UI and customization options, and of-course the maintainers (and their servers) differ too
 
-Fedora - Highly polished, just works. Solid choice in most ways
 
-RedHat/CentOS - stable (business)
+Debian - simplicity. Has a large community and common program support/compatibility
+    Ubuntu - user-friendly, basic/beginner experience on GNOME
+        Mint - customized with a lot of tools and a few distinct systems
+        Pop!OS - basically a slightly more beginner-friendly Mint-like?
+        Elementary OS - stylish. Mouse (non-terminal) oriented. Requires recent hardware and at-least medium-spec hardware
+        Kubuntu - flavor rather than distro; running on KDE Plasma (instead of GNOME)
+        Lubuntu - flavor rather than distro; runinng on LXQt (instead of GNOME). Very lightwedight 
+        Xubuntu - flavor rather than distro; runinng on Xfce (instead of GNOME). Very lightwedight 
+    SteamOS 1 / 2 - a game library
+    Kali - basically a network and penetration-testing platform
 
-Ubuntu - user friendly (again, after failing at it for a while)
 
-Arch - custom-tailored ; runs specifically on your hardware (marginally faster than other distros), comes with minimal installations
-    Known to be less stabel
+Red Hat - stable; business-oriented
+    Fedora - Highly polished, just works. Solid choice in most ways
+    CentOS - stability/security-focused (on expense of updates). Used often on servers
+    RHEL - Enterprise Linux, used often on servers
 
-Kali - basically a network and penetration-testing platform
 
-Gentoo - Like Arch but more extreme 
+Arch - custom-tailored, meant to be personally-configured ; runs specifically on your hardware (marginally faster than other distros). Known to be less stable
+    EndeavourOS - possibly the best Arch distro, according to someone on youtube
+    Garuda - use-friendly and polished with pre-selected programs and features
+    Manjaro - relatively-convenient Arch; it detects your hardware and installs the necessary drivers for you
+        Big Linux - has a lot of convenient GUI configurations, and an easy way to switch the Desktop Environment
+    SteamOS 3 - Steam Deck's OS, used for gaming, runs with KDE Plasma 5 and has a Windows-compatibility layer
+
+
+Enoch
+    Gentoo - Like Arch but somehow more extreme 
+        Chromium OS - for people who don't want a computer, just Google Chrome
+
 
 Alpine - very light and minimalistic (supports run-from-RAM), great for microservices and dockerized server stuff
 
-NixOS - ?
+
+SuSE Linux - [Software- und System-Entwicklung (Software and Systems Development)]
+    OpenSUSE Tumbleweed - rolling versions, but still stable. Can switch flavors easily!  OpenSUSE is meant for IT and productivity (comes with preinstallations)
+
+
+NixOS - supports a lot of packages. The Nix package manager is available for other distros.
+
+
+Android
+    LineageOS - a privacy-centered fork of CyanogenMod
+
+
+SELinux - Security Enhanced Linux developed by Red Hat and used by the NSA. Has a complicated user-access system.
+
+
+Meant to run on media attachments. Lightweight
+    Porteus - Works off SD/DVD/USB... Light and fast
+    Puppy - Works off SD/DVD/USB...
+
+
+OpenBSD isn't Linux, but it's still Unix-like. Entirely free and highly secure (network security).
+
+
+
+
+
+Desktop Environments / flavors: (remember that those can be swapped; those are just system configurations / packages)
+
+    KDE - Stylish/modern, cross-platform. Has a large (well-made) applications bundle. [Kool Desktop Environment]
+        KDE Plasma - Has a lot of flare to it.
+        KDE Lite - ?
+    GNOME - a fork of GTK(+). GNOME 3 is a bit more Mac-like.
+        Cinnamon - Stylized, but still decently snappy. A fork of GNOME 3 but the layout is like GNOME 2 (Windows-7 like).
+        MATE - Lighter than Cinnamon. The primary continuation of GNOME 2. Looks like Windows Vista.
+    Xfce - Minimal on features and with crude graphics, works for weak or old hardware. Based on GTK 3. Looks like flat Windows XP [abbreviation: XForms Common Environment]
+    LXQt - lightweight, about the same as Xfce (used to be the lighter, back when LXQt was called LXDE). Built with Qt; relatively new (for better/worse). Looks like an amalgamation of old Windows and Mac, seems to have its own quirks
+    Qtile - ?
+    i3WM - ?
+    Wayfire - ?
+
+
+Visuals:
+GTK - open source toolkits and GUI elements. Everything uses it.
+Qt - a cross platform (for every common OS) GUI creator  [pronounced "cute"]
+X11 - a display server. Extremely common, very old, somewhat bloated.
+Wayland - a relatively new and lighter display server that aims to replace X11. Still not as widely supported as X11 by various programs
+
+File Managers:
+Nautilus - built on GNOME 2
+Nemo - A fork of Nautilus
+Caja - A fork of Nautilus
+Dolphin - built on KDE
 
 
 
