@@ -5,34 +5,38 @@ Basically there are 3 primary groups of desktop distros (which use different pac
 Some distros come with specially-made UI and customization options, and of-course the maintainers (and their servers) differ too
 
 
-Debian - simplicity. Has a large community and common program support/compatibility
+Debian - operating simplicity. Has a large community and common program support/compatibility. Debian itself isn't (or just wasn't?) easy to install.
     Ubuntu - user-friendly, basic/beginner experience on GNOME
         Mint - customized with a lot of tools and a few distinct systems
-        Pop!OS - basically a slightly more beginner-friendly Mint-like?
-        Elementary OS - stylish. Mouse (non-terminal) oriented. Requires recent hardware and at-least medium-spec hardware
+        Pop!OS - like mint, stylized on its own
+        Elementary OS - stylish. Mouse (non-terminal) oriented. Requires recent hardware and at-least medium-spec hardware. Runs its own unique Desktop Environment that's in many ways like Mac
         Kubuntu - flavor rather than distro; running on KDE Plasma (instead of GNOME)
         Lubuntu - flavor rather than distro; runinng on LXQt (instead of GNOME). Very lightwedight 
         Xubuntu - flavor rather than distro; runinng on Xfce (instead of GNOME). Very lightwedight 
-    SteamOS 1 / 2 - a game library
+    SteamOS 1 / 2 - a game library/player
     Kali - basically a network and penetration-testing platform
+    Tails - Security/privacy-focused OS that runs off of a USB drive, and doesn't persist information
+    Raspberry Pi OS - runs RaspberryPi devices
 
 
 Red Hat - stable; business-oriented
-    Fedora - Highly polished, just works. Solid choice in most ways
+    Fedora - Highly polished, just works. Solid choice in most ways. Linus Tovalds's choice!
+        QubesOS - privacy-focused; everything is in its own VM. Touted as the best for security by Edward Snowden.
     CentOS - stability/security-focused (on expense of updates). Used often on servers
-    RHEL - Enterprise Linux, used often on servers
+    RHEL - Enterprise Linux, used often on servers. NOT free.
 
 
-Arch - custom-tailored, meant to be personally-configured ; runs specifically on your hardware (marginally faster than other distros). Known to be less stable
+Arch - custom-tailored, meant to be personally-configured ; runs specifically on your hardware (marginally faster than other distros). Updates often, known to be less stable
     EndeavourOS - possibly the best Arch distro, according to someone on youtube
     Garuda - use-friendly and polished with pre-selected programs and features
     Manjaro - relatively-convenient Arch; it detects your hardware and installs the necessary drivers for you
+    Arco Linux - similar to Manjaro?
         Big Linux - has a lot of convenient GUI configurations, and an easy way to switch the Desktop Environment
     SteamOS 3 - Steam Deck's OS, used for gaming, runs with KDE Plasma 5 and has a Windows-compatibility layer
 
 
 Enoch
-    Gentoo - Like Arch but somehow more extreme 
+    Gentoo - Like Arch but somehow more extreme. You have to compile everything yourself.
         Chromium OS - for people who don't want a computer, just Google Chrome
 
 
@@ -56,6 +60,10 @@ SELinux - Security Enhanced Linux developed by Red Hat and used by the NSA. Has 
 Meant to run on media attachments. Lightweight
     Porteus - Works off SD/DVD/USB... Light and fast
     Puppy - Works off SD/DVD/USB...
+    Tails (already mentioned above)
+
+
+Linux From Scratch - a project that takes you through creation and customization of your own Linux OS.
 
 
 OpenBSD isn't Linux, but it's still Unix-like. Entirely free and highly secure (network security).
@@ -66,7 +74,7 @@ OpenBSD isn't Linux, but it's still Unix-like. Entirely free and highly secure (
 
 Desktop Environments / flavors: (remember that those can be swapped; those are just system configurations / packages)
 
-    KDE - Stylish/modern, cross-platform. Has a large (well-made) applications bundle. [Kool Desktop Environment]
+    KDE - Uses Qt. Stylish/modern and highly modifiable. Has a large (well-made) applications bundle. [Kool Desktop Environment]
         KDE Plasma - Has a lot of flare to it.
         KDE Lite - ?
     GNOME - a fork of GTK(+). GNOME 3 is a bit more Mac-like.
@@ -83,13 +91,27 @@ Visuals:
 GTK - open source toolkits and GUI elements. Everything uses it.
 Qt - a cross platform (for every common OS) GUI creator  [pronounced "cute"]
 X11 - a display server. Extremely common, very old, somewhat bloated.
-Wayland - a relatively new and lighter display server that aims to replace X11. Still not as widely supported as X11 by various programs
+Wayland - a display server newer and lighter than X11. Many programs still don't support it
 
 File Managers:
 Nautilus - built on GNOME 2
 Nemo - A fork of Nautilus
 Caja - A fork of Nautilus
 Dolphin - built on KDE
+
+
+
+
+
+
+Meme distros:
+AmogOS (among us, unknown to me what it forks off)
+Ubuntu Satanic Edition (satanic Ubuntu, comes with free Metal music)
+Moebuntu (moe Ubuntu. Anime styled)
+Uwuntu (UwU Ubuntu. Anime styled)
+Suicide Linux (debian based? incorrect commands get translated to "rm -rf /")
+Red Star OS (North Korea's OS, unknown to me what it forks off. An opressive malware OS)
+
 
 
 

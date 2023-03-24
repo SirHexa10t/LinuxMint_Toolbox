@@ -287,6 +287,7 @@ end_messages+=("Piper is installed. When using it, change the output format to m
 
 
 # TODO - remove? Generally contemplating between  gmusicbrowser, amarok, or quodlibet.  quodlibet is (supposedly) able to play music from within archives, and browse entire playlist folders as one...
+# TODO - go through:  https://alternativeto.net/software/foobar2000/?platform=linux
 # music library
 sudo add-apt-repository ppa:lazka/ppa
 sudo apt-get update -y
@@ -383,6 +384,9 @@ print_end_messages
 # TODO - qbittorrent
 
 
+# https://alternativeto.net/  # you can lookup windows-program alternatives here
+
+
 # TODO - maybe install Nix package manager
 #   sh <(curl -L https://nixos.org/nix/install) --daemon
 #   echo "experimental-features = nix-command flakes" >> "$HOME/.config/nix/nix.conf"  # run commands easier and search for packages locally with "nix search nixpkgs <pkg>"
@@ -424,6 +428,8 @@ print_end_messages
   # marktext - handles markdown text (specially)
   # Obsidian - handles markdown too, but also does a lot more; organizes your files into categories for you
   # NeoVim - vim-styled editor  # run "vimtutor" to learn vim in 30m
+  #   NvChad - basically VSCode on NeoVim
+  #   LunarVIM - similar to NvChad
 
 
 # ardour - audio editing
@@ -435,7 +441,13 @@ print_end_messages
 
 
 # OpenRGB - custom RGB lighting management
+
+# Gaming:
 # Goverlay - stats overlay on top of games (Like Afterburner+RivaRuner do) + performance result graphs
+# WINE - windows emulator
+# Lutris - a program that could help you run some problematic games on WINE 
+# Proton (flatpack: ProtonUp-Qt) - valve's virtualization layer with combalibility features for WINE. You can download several versions of libraries, for support of different games
+
 
 # internet-service clients:
 # mailspring - email client
@@ -450,3 +462,4 @@ print_end_messages
 # FireDragon - browser based on LibreWolf  # install ublock origin on it  # configure it - prevent WebRTC from leaking local IP addresses
 # Okular (viewing PDFs)
 
+# Flatpack: Grub Customizer - a GUI editor for GRUB (choose default Boot mode of your OS, menu options, waiting time)
