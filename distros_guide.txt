@@ -1,6 +1,6 @@
-
 # Feel free to ignore this file, it's a work in progress, still in the data-aggregation phase
 
+Distros:
 Basically there are 3 primary groups of desktop distros (which use different package managers): Debian (apt), Arch (pacman), Fedora (dnf)
 Some distros come with specially-made UI and customization options, and of-course the maintainers (and their servers) differ too
 
@@ -72,16 +72,24 @@ OpenBSD isn't Linux, but it's still Unix-like. Entirely free and highly secure (
 
 
 
-Desktop Environments / flavors: (remember that those can be swapped; those are just system configurations / packages)
+Desktop Environments / flavors: 
+Remember that those can be swapped; those are just system configurations / packages
 
-    KDE - Uses Qt. Stylish/modern and highly modifiable. Has a large (well-made) applications bundle. [Kool Desktop Environment]
-        KDE Plasma - Has a lot of flare to it.
-        KDE Lite - ?
-    GNOME - a fork of GTK(+). GNOME 3 is a bit more Mac-like.
-        Cinnamon - Stylized, but still decently snappy. A fork of GNOME 3 but the layout is like GNOME 2 (Windows-7 like).
-        MATE - Lighter than Cinnamon. The primary continuation of GNOME 2. Looks like Windows Vista.
-    Xfce - Minimal on features and with crude graphics, works for weak or old hardware. Based on GTK 3. Looks like flat Windows XP [abbreviation: XForms Common Environment]
-    LXQt - lightweight, about the same as Xfce (used to be the lighter, back when LXQt was called LXDE). Built with Qt; relatively new (for better/worse). Looks like an amalgamation of old Windows and Mac, seems to have its own quirks
+    Qt-based:
+        KDE (Neon) - Entirely free-software based. Stylish/modern and highly modifiable. Has a large (well-made) applications bundle. [Kool Desktop Environment]
+            KDE Plasma - Has a lot of flare to it.
+            KDE Lite - ?
+        LXDE - a barebones lightweight environment
+        LXQt - lightweight fork of LXDE, (about twice heavier the LXDE). Negligibly lighter than Xfce; relatively new (for better/worse). Looks like an amalgamation of old Windows and Mac, seems to have its own quirks
+
+    GTK(+)-based: (GTK 3)
+        GNOME - Very common, but the progression from GNOME 2 to GNOME 3 (a bit more Mac-like) was controvertial.
+            Cinnamon - Stylized, but still decently snappy. A fork of GNOME 3 but the layout is like GNOME 2 (Windows-7 like).
+            MATE - Lighter than Cinnamon. The primary continuation of GNOME 2. Looks like Windows Vista.
+        Xfce - Minimal on features and with crude graphics, works for weak or old hardware. Looks like flat Windows XP [abbreviation: XForms Common Environment]
+        Pantheon - ?
+        Unity - used to be the environment of Ubuntu, but they're long-gone
+
     Qtile - ?
     i3WM - ?
     Wayfire - ?
@@ -91,7 +99,7 @@ Visuals:
 GTK - open source toolkits and GUI elements. Everything uses it.
 Qt - a cross platform (for every common OS) GUI creator  [pronounced "cute"]
 X11 - a display server. Extremely common, very old, somewhat bloated.
-Wayland - a display server newer and lighter than X11. Many programs still don't support it
+Wayland - a display server newer and lighter than X11. Many programs still don't support it. Accepts laptop trackpad gestures.
 
 File Managers:
 Nautilus - built on GNOME 2

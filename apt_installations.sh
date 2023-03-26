@@ -386,6 +386,8 @@ print_end_messages
 
 # https://alternativeto.net/  # you can lookup windows-program alternatives here
 
+# Flatpak and AppImage are generally faster than snap / apt. Source: https://www.youtube.com/watch?v=OftD86RgAcc
+#     There are exceptions. KdenLive renders much faster through apt/dnf.
 
 # TODO - maybe install Nix package manager
 #   sh <(curl -L https://nixos.org/nix/install) --daemon
