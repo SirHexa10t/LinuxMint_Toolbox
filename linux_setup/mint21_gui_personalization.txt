@@ -48,7 +48,7 @@ Go to System Settings >
                 -> optional: add "expo" to manage several desktops... probably not
                 -> optional: in Download -> add "QRedshift" to make the screen warmer at night
                 -> optional: in Download -> see what other things could interest you
-           right-click the Calendar (bottom-right corner) > configure > Use a custom date format -> use this format: "%Y-%m-%e%n(%a)%X" (or maybe skip the %a (day name, shortened))
+           right-click the Calendar (bottom-right corner) > configure > Use a custom date format -> use this format: "%Y-%m-%d%n(%a)%X" (or maybe skip the %a (day name, shortened))
     
     Right-click any icon on the Panel (taskbar) (while not in Panel Edit mode) > Applet Preferences > Configure...
         Mouse wheel scroll action -> Cycle windows

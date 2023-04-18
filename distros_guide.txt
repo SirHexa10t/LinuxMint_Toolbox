@@ -81,6 +81,7 @@ Remember that those can be swapped; those are just system configurations / packa
             KDE Lite - ?
         LXDE - a barebones lightweight environment
         LXQt - lightweight fork of LXDE, (about twice heavier the LXDE). Negligibly lighter than Xfce; relatively new (for better/worse). Looks like an amalgamation of old Windows and Mac, seems to have its own quirks
+        Qtile - ?
 
     GTK(+)-based: (GTK 3)
         GNOME - Very common, but the progression from GNOME 2 to GNOME 3 (a bit more Mac-like) was controvertial.
@@ -89,11 +90,16 @@ Remember that those can be swapped; those are just system configurations / packa
         Xfce - Minimal on features and with crude graphics, works for weak or old hardware. Looks like flat Windows XP [abbreviation: XForms Common Environment]
         Pantheon - ?
         Unity - used to be the environment of Ubuntu, but they're long-gone
+        Budgie - ?
 
-    Qtile - ?
+    i3 - keyboard-only window manager
+        TODO - see what it's based on
+    DWM - another window manager (just terminal windows)
+    
+    DDE (Desktop Deepin Environment) - all I know is that it's a "beautiful" environment, maybe the best at that.
     i3WM - ?
     Wayfire - ?
-
+    
 
 Visuals:
 GTK - open source toolkits and GUI elements. Everything uses it.

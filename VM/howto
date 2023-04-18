@@ -48,7 +48,6 @@ unix_sock_rw_perms = "0770"
 log_filters="1:qemu"
 log_outputs="1:file:/var/log/libvirt/libvirtd.log"
 
-sudo usermod -a -G libvirt $(whoami)
 # enable and start systemd service libvertd
 sudo systemctl enable libvirtd 
 sudo systemctl start libvirtd 
@@ -233,7 +232,7 @@ In VM Manager, add PCI device:
 
 
 Change Video QXL to Model: None
-    This way you'll only have 1 screen; the one you output image to (which is at a higher resolution)
+    This way you'll only have 1 screen; the physical monitor you output image to (which is at a higher resolution)
 
 Add Keyboard and Mouse to the VM
 
@@ -253,13 +252,14 @@ Download this project: https://github.com/pavolelsig/L-G_helper
 extract both and put the looking-glass folder in the helper's folder 
 
     Notice: if the helper won't manage to compile for you, let it setup your environment and service, and compile the binaries according to:  https://looking-glass.io/docs/B6/build/#host-building
+        For APT specifically:  https://looking-glass.io/docs/B6/build/#fetching-with-apt
         The apt installations could be a bit different than in the helper, so rerun them regardless
 
 go into the helper and run:
     chmod +x lg.sh
     sudo ./lg.sh
 
-confirm prompts if you see no problem
+confirm prompts, see that there are no problems
 go to <helper_folder>/<looking-glass_folder>/client/build/  and take the compiled client "looking-glass-client" somewhere sensible, like to /usr/local/bin/
     sudo mv looking-glass-client /usr/local/bin/
 
@@ -326,13 +326,13 @@ Extract, and run main script.
 
 Review the found hardware - don't include the unwanted (repeated or accidentally-plugged hardware)
 
-Paste the output into your VM's XML.
+Paste the output into your VM's XML
     Make sure to paste the 2 segments before applying, or the VM Manager might change the single-addition automatically.
-    The first line goes instead of the XML's first line
-    The <qemu:commandline> tag section goes before the very end, above the </domain> tag
+        The first line (a specific domain tag) goes instead of the XML's first line
+        The <qemu:commandline> tag section goes before the very end, above the </domain> tag
 
 
-Edit (sudo) qemu conf: /etc/libvirt/qemu.conf
+Edit (with sudo) qemu conf: /etc/libvirt/qemu.conf
     Make sure that at the end the device-ACL isn't listed more than once. Delete the extras if necessary
     The script probably added user and group definition as "root". Delete these 2 definitions.
 
@@ -340,6 +340,7 @@ If you went by the above setup, your own user is mentioned in the conf file; giv
     usermod -aG input "$(whoami)"
     systemctl restart libvirtd  # apply changes
 
+Test: run your VM and press both CTRL keys to switch keyboard and mouse between host and guest.
 
 external references:
 https://www.youtube.com/watch?v=4XDvHQbgujI
@@ -372,7 +373,7 @@ run this: "scream -i virbr0 -p 4011 -u"  # 4011 is a standard port. The default 
         Write down (or keep open) the (inet) address of virbr0, you'll need it for the guest
 
 Open Firewall and add a rule that allows in audio through network.
-    Add "simple" rule: on UDP on ports 4010:4015 (allowing several, in case you'd want to have several VM streaming-in)
+    Add "simple" rule: on UDP on ports 4010:4015 (allowing several, in case you'd want to have several VMs streaming-in)
     You should keep the general Incoming: Deny
 
 You can add scream to startup (do it once you confirm everything works)

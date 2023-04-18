@@ -1,25 +1,15 @@
 #!/bin/bash
 
 
+# TODO - simplify (too many installation files)
+# source the nearby (file in same dir) basic installation shortcuts
+source "$(dirname $0)/install_functions_basic.sh"
+
+
 distro=`cat /etc/*release | grep UBUNTU_CODENAME | cut -d '=' -f 2`  # For Linux Mint 21(.1) the result is "jammy"
 
 end_messages=()
 
-
-
-# The following colors are in bright colors, assuming you're a man of culture who uses a dark terminal. If not, remove the "\033[1m" prefix in those functions
-# echoes in red. Just an aesthetic thing.
-function recho () {
-	echo -e "\033[1m\033[31m${@}\033[0m"
-}
-# echoes in green. Just an aesthetic thing.
-function gecho () {
-	echo -e "\033[1m\033[32m${@}\033[0m"
-}
-# echoes in blue. Just an aesthetic thing.
-function becho () {
-	echo -e "\033[1m\033[34m${@}\033[0m"
-}
 
 # TODO - test? (not sure if already tested)
 # use like so: install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.2.3' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"

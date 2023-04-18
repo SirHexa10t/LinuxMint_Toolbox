@@ -29,7 +29,7 @@ sudo apt install gdebi -y
 # a terminal pane-arranger and session keeper
 sudo apt install tmux -y
 
-# a tool that simulates keypresses
+# a tool that simulates mouse/keypresses
 # sudo apt install xdotool -y
 
 # like nano but better. If you're not restricted to the terminal (and the data isn't, such as results from "man"), just use Xed.
@@ -126,7 +126,7 @@ sudo apt install codium -y # codium-insiders
 sudo apt install krita -y
 
 # install gimp (good paint replacement for quick edits)
-# You should actually install from AppImage, for substantially better performance. Source: https://www.youtube.com/watch?v=OftD86RgAcc
+# You should actually install from AppImage, for substantially better performance.
 	# TODO - revise installations accordingly (investigate which other apps run faster through other installations)
 sudo apt install gimp -y
 
@@ -141,12 +141,13 @@ sudo apt install blender -y
 # Get the direct-download link of JetBrains product by checking the "direct link" in an IDE's download page (such as:  https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=linux&code=PCC  )
 # PyCharm (Python) - Professional/Community
 install_targz_in_opt --url "https://download.jetbrains.com/python" --app_name 'pycharm-community-2022.3.2' --app_location '/opt/jetbrains' --inner_executable "bin/pycharm.sh"
+sudo ln -s /opt/jetbrains/pycharm-community-2022.3.2/bin/pycharm.sh /usr/local/bin/pycharm
 
 # IntelliJ IDEA (Java , and some others) - Community
 install_targz_in_opt --url "https://download.jetbrains.com/idea" --app_name 'ideaIC-2022.3.2' --app_location '/opt/jetbrains' --inner_executable "bin/idea.sh"
+sudo ln -s /opt/jetbrains/ideaIC-2022.3.2/bin/idea.sh /usr/local/bin/intellij-idea
 
-
-# Android Studio 
+# Android Studio
 sudo apt-add-repository ppa:maarten-fonville/android-studio -y
 sudo apt update
 sudo apt install android-studio -y
@@ -389,10 +390,19 @@ print_end_messages
 # Flatpak and AppImage are generally faster than snap / apt. Source: https://www.youtube.com/watch?v=OftD86RgAcc
 #     There are exceptions. KdenLive renders much faster through apt/dnf.
 
+# TODO - install zsh, use it for shell instead of /bin/bash
+#   install extension "ohmyzsh":  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 # TODO - maybe install Nix package manager
 #   sh <(curl -L https://nixos.org/nix/install) --daemon
 #   echo "experimental-features = nix-command flakes" >> "$HOME/.config/nix/nix.conf"  # run commands easier and search for packages locally with "nix search nixpkgs <pkg>"
 #     alternatively use the webpage: https://search.nixos.org/packages  - it contains installation commands for packages too
+
+# TODO - tiling window managers
+#   "awesome" - highly customizable and works great if you know LUA
+#   qtile
+#   i3 is easy to get into
+
 
 # TODO - add ranger
 # trash-cli / rm-trash  -  trash gives you cli for handling recycle bin , rm-trash is rm (same api) but to recycle bin rather than immediate delete
