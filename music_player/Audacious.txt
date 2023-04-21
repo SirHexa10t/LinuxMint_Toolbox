@@ -1,0 +1,37 @@
+project: https://github.com/audacious-media-player/audacious
+site: https://audacious-media-player.org/
+forum, bugs, features: https://redmine.audacious-media-player.org/
+Join Project link: https://app.transifex.com/join/?o=audacious&p=audacious&t=opensource
+
+
+Reasons to pick or not pick Audacious:
+--------------------------------------
++ Reads all sorts of formats. ogg, wav, mp3, mp4, flac, tta, even midi and flv
+-    but can't read them directly from within an archive like Foobar2000. Seems none can. 
+- GTK3 and Qt5 UI modes have different missing features. One can't support user-defined keys, and one can't lock windows within GUI, among other problems
++ High quality of audio and 7 playback methods
+- No playlist tree/folders
++ Has decent basic tools: Equalizer, basic effects, duplication removal in playlists, open track in file explorer...
++ Sort-of has plugins choice (seems quite limited and I can't see how you can add new components). At least it has the concept of plugins...
++ Basic pane organization
+- Some of the plugins (like finding lyrics) just don't work
+- Somewhat buggy - you need to press some plugin options twice to make the corresponding menu appear
+-    visually moving rows (at least at the start) as they "adjust" themselves insometimes
+-    some tracks seem to start after 0.1 seconds of another track that's attempting to start - seems like it doesn't follow the .cue precisely (seems to round up the end?)
+
+
+
+Play MIDI files: you'd need to install soundfonts.
+Ubuntu based systems come with them by default, you can find them in a path like this:  /usr/share/sounds/sf3/default-GM.sf3
+
+
+Theme configuration:
+I picked a dark (but not black) theme wich white(ish) writing and buttons. My setup at "Qt5 Configuration Tool":
+    Style: gtk2     Standard dialogs: Default       Palette: Default
+    Icon Theme: Mint-Y-Dark
+
+
+
+Some of the key shortcuts are specified here:
+    https://defkey.com/audacity-shortcuts
+    You can also see some of the shortcuts by going through the toolbar menu

@@ -10,6 +10,7 @@ Debian - operating simplicity. Has a large community and common program support/
         Mint - customized with a lot of tools and a few distinct systems
         Pop!OS - like mint, stylized on its own
         Elementary OS - stylish. Mouse (non-terminal) oriented. Requires recent hardware and at-least medium-spec hardware. Runs its own unique Desktop Environment that's in many ways like Mac
+        Zorin OS - comes with some common software like Mint (and a bit beyond). Updates rather slow, every 2 years
         Kubuntu - flavor rather than distro; running on KDE Plasma (instead of GNOME)
         Lubuntu - flavor rather than distro; runinng on LXQt (instead of GNOME). Very lightwedight 
         Xubuntu - flavor rather than distro; runinng on Xfce (instead of GNOME). Very lightwedight 
@@ -29,7 +30,7 @@ Red Hat - stable; business-oriented
 Arch - custom-tailored, meant to be personally-configured ; runs specifically on your hardware (marginally faster than other distros). Updates often, known to be less stable
     EndeavourOS - possibly the best Arch distro, according to someone on youtube
     Garuda - use-friendly and polished with pre-selected programs and features
-    Manjaro - relatively-convenient Arch; it detects your hardware and installs the necessary drivers for you
+    Manjaro - (was) relatively-convenient Arch; it detects your hardware and installs the necessary drivers for you. But they're not updating their certificates properly, and replaced open-source software with proprietary, and used alpha/beta version of apps as "stable". And some packages on AUR break Manjaro due to versioning.
     Arco Linux - similar to Manjaro?
         Big Linux - has a lot of convenient GUI configurations, and an easy way to switch the Desktop Environment
     SteamOS 3 - Steam Deck's OS, used for gaming, runs with KDE Plasma 5 and has a Windows-compatibility layer

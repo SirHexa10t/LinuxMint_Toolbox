@@ -398,9 +398,9 @@ print_end_messages
 #   echo "experimental-features = nix-command flakes" >> "$HOME/.config/nix/nix.conf"  # run commands easier and search for packages locally with "nix search nixpkgs <pkg>"
 #     alternatively use the webpage: https://search.nixos.org/packages  - it contains installation commands for packages too
 
-# TODO - tiling window managers
-#   "awesome" - highly customizable and works great if you know LUA
-#   qtile
+# TODO - tiling window managers (unless you expertise in tmux)
+#   "awesome" - highly customizable and works great if you know LUA (for configurations)
+#   qtile - configured through Python
 #   i3 is easy to get into
 
 
