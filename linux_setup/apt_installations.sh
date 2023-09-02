@@ -29,6 +29,9 @@ sudo apt install gdebi -y
 # a terminal pane-arranger and session keeper
 sudo apt install tmux -y
 
+# a process/resource manager/monitor, like htop but sleeker
+sudo apt install btop -y
+
 # a tool that simulates mouse/keypresses
 # sudo apt install xdotool -y
 
@@ -64,11 +67,19 @@ install_deb_from_url "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
 sudo apt install tldr -y
 tldr -u  # update manuals
 
+# flatpak packages manager
+sudo apt install flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
 # TODO - remove?
 # Connect via SMB (for NAS usage)
 sudo apt-get install cifs-utils -y
 # Connect via NFS (for NAS usage)
 sudo apt install nfs-common -y
+
+
+# USB image creator (like rufus). After installation, program is called "Start Up Disk Creator"
+sudo apt install usb-creator-gtk
 
 # visual appeal
 sudo apt install cmatrix -y  # run "cmatrix" to display a matrix-like animation in your terminal
@@ -113,7 +124,7 @@ wget https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
 sudo mv pub.gpg /usr/share/keyrings/vscodium-archive-keyring.asc
 echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.asc ] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs vscodium main' | sudo tee /etc/apt/sources.list.d/vscodium.list
 sudo apt update
-sudo apt install codium -y # codium-insiders
+sudo apt install codium -y  # codium-insiders
 
 
 # At least as of 2022-12-31, JetBrains Fleet isn't worth installing.
@@ -122,7 +133,7 @@ sudo apt install codium -y # codium-insiders
 # install_targz_in_opt --url "https://download.jetbrains.com/toolbox" --app_name 'jetbrains-toolbox-1.27.2.13801' --app_location '/opt/jetbrains'  # install jetbrains "toolbox"
 
 
-# install Krita (photoshop-like image editing)
+# install Krita (photoshop-like image editing). Supports/opens .psd files
 sudo apt install krita -y
 
 # install gimp (good paint replacement for quick edits)
@@ -134,7 +145,8 @@ sudo apt install gimp -y
 #################################################################################### Creative Workspace
 
 # Blender (3D modeling)
-sudo apt install blender -y
+# sudo apt install blender -y  # prefer flatpak over apt, for later version (big difference: 3.6.0 over 3.0.1)
+flatpak install flathub org.blender.Blender
 
 
 #################################################################################### IDEs
@@ -290,10 +302,34 @@ end_messages+=("Piper is installed. When using it, change the output format to m
 # TODO - remove? Generally contemplating between  gmusicbrowser, amarok, or quodlibet.  quodlibet is (supposedly) able to play music from within archives, and browse entire playlist folders as one...
 # TODO - go through:  https://alternativeto.net/software/foobar2000/?platform=linux
 # music library
-sudo add-apt-repository ppa:lazka/ppa
-sudo apt-get update -y
-sudo apt-get install quodlibet -y
+# sudo add-apt-repository ppa:lazka/ppa
+# sudo apt-get update -y
+# sudo apt-get install quodlibet -y
 
+# sudo apt install audacious -y  # installed a somewhat outdated version
+sudo add-apt-repository ppa:ubuntuhandbook1/apps -y
+sudo apt update
+sudo apt install audacious audacious-plugins audacious-plugins-data -y  # installs the up-to-date version maintained by "Panda Jim": https://launchpad.net/~ubuntuhandbook1/+archive/ubuntu/apps
+
+
+# sudo apt-add-repository universe  # necessary for plugins
+# sudo apt-get update
+# sudo apt-get install audacious-plugins
+end_messages+=("installed audacious. You can tweak the MIDI player to use: \"/usr/share/sounds/sf3/default-GM.sf3\" or sf2 if you'd prefer.")
+
+
+# https://github.com/strawberrymusicplayer/strawberry/releases
+# https://www.strawberrymusicplayer.org/
+# sudo add-apt-repository ppa:jonaski/strawberry
+# sudo apt update
+# sudo apt install strawberry
+
+# if you want to build strawberry with qt5 yourself you need these installations:
+# sudo apt install cmake -y
+# sudo apt install libboost1.74-all-dev -y
+# sudo apt install libgnutls -y
+# sudo apt-get install protobuf-compiler libprotobuf-dev -y
+# sudo apt-get install libcdio-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly libgstreamer1.0-dev libvlc-dev libsqlite3-dev
 
 #################################################################################### drivers
 
@@ -369,10 +405,10 @@ install_deb_from_url "https://desktop.docker.com/linux/main/amd64/docker-desktop
 
 # -------------------------------------------------------------------------------- debloat system
 # sudo apt-get remove --purge libreoffice* -y
+sudo apt purge rhythmbox -y
 
 sudo apt-get clean
 sudo apt-get autoremove
-
 
 
 
@@ -419,7 +455,8 @@ print_end_messages
 
 # Rust applications
 # TODO - install exa ? (ls, but more colorful)
-# TODO - install "bat" ? (cat, but colorized)
+# TODO - install "bat" ? (cat, but colorized) and check out this project: [ github.com/eth-p/bat-extras ]
+  # you can force bat as manpager by adding this to bashrc:  export MANPAGER="sh -c 'col -bx | bat -l man -p'"  # maybe use $SHELL here
 # Similarly there's RipGrep replacing grep, FD replacing find, procs instead of ps.
 
 # magick - image format converter
@@ -475,3 +512,6 @@ print_end_messages
 # Okular (viewing PDFs)
 
 # Flatpack: Grub Customizer - a GUI editor for GRUB (choose default Boot mode of your OS, menu options, waiting time)
+
+
+

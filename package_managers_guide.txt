@@ -1,0 +1,25 @@
+# Feel free to ignore this file, it's a work in progress, still in the data-aggregation phase
+
+Terminology:
+* "Universal"/"distribution-agnostic" package-manager: works on all distros. Some package managers even work on non-Linux platforms
+* "Self contained" dependencies: the packages have all the dependencies they need, lowering the mess/risk of different packages requiring different versions of the same dependencies or relying on packages you can't get anymore. Of course, this makes them heavier, and also less secure as package overseers need to update often, as vulnerabilities and fixes are found.
+* "Containerized"/"Sandboxed": running in an isolated environment that has restricted access, thus safer
+
+
+APT: Used by Debian-based systems
+    DPKG: low-level package-management system, underlying APT
+
+Yum/DNF: Used by Fedora and CentOS
+
+Pacman: Used by Arch Linux
+
+Snaps: Universal, sandboxed, self-contained dependencies. Owned by canonical (Ubuntu's owners). The attempt to make them Universal (solving the package-creators' problem of compiling many versions) comes at the cost of being typically slow in runtime. 
+
+Nix: Universal, but mainly meant for NixOS. Might give you trouble if you intend to run your packages outside your terminal
+
+Flatpak: Universal, sandboxed, self-contained dependencies. Common dependencies are shared within Flatpak's environment. Can use various package repositories; notably: FlatHub, GNOME Software, KDE Store, LibreOffice Flatpak
+
+AppImage: Universal, sandboxed, Self-contained. Every package is a single independent executable file. The entire file is replaced in an update, and there's no sharing of dependencies.
+
+
+

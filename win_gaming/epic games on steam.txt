@@ -1,0 +1,8 @@
+reference:
+https://www.reddit.com/r/RocketLeague/comments/jdd57f/how_to_add_epic_games_rocket_league_to_steam/
+
+The 'Target' will be the link to EPIC Laucher executable (Example: "C:\Games\Launcher\Portal\Binaries\Win64\EpicGamesLauncher.exe")
+"Start in" set to the EPIC Laucher executable path (Example: "C:\Games\rocketleague\Binaries\Win64\")
+Set the 'Rocket League' respective lauch options to: com.epicgames.launcher://apps/Sugar?action=launch&silent=true
+
+

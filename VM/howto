@@ -390,7 +390,7 @@ Download (in VM) Scream for guest client (binaries zip):  https://github.com/dun
     extract, and run "install" as administrator
 
 Pick (in guest VM) "Speakers (Scream (WDMI))" from the bottom-right sounds menu
-Go to Device Manager > "Sound, video and game controllers" and disable devices other thatn Scream
+Go to Device Manager > "Sound, video and game controllers" and disable devices other than Scream
 Play something to see if you can hear.
 
 If you can't hear, try modifying registry:

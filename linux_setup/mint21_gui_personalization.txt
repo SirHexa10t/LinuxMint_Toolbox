@@ -147,8 +147,11 @@ follow QEMU installation file's instructions
 Run the apt_installations.sh file
 
 
-
-
+In VSCode/VSCodium:
+    # cancel the tab deletion in empty lines:
+        go to  File > Preferences > Settings
+        look for "editor.trimAutoWhitespace" and set it to false (uncheck it)
+        
 
 # not working well:   enable session-saving: run 'dconf-editor' and go to org > cinnamon > cinnamon-session -> turn on 'auto-save-session'
 
