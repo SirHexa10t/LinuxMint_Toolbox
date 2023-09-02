@@ -16,6 +16,7 @@ Debian - operating simplicity. Has a large community and common program support/
         Xubuntu - flavor rather than distro; runinng on Xfce (instead of GNOME). Very lightwedight 
     SteamOS 1 / 2 - a game library/player
     Kali - basically a network and penetration-testing platform
+    Parrot - same as Kali but less bloated
     Tails - Security/privacy-focused OS that runs off of a USB drive, and doesn't persist information
     Raspberry Pi OS - runs RaspberryPi devices
 
@@ -37,7 +38,7 @@ Arch - custom-tailored, meant to be personally-configured ; runs specifically on
 
 
 Enoch
-    Gentoo - Like Arch but somehow more extreme. You have to compile everything yourself.
+    Gentoo - Like Arch but somehow more extreme. You have to compile everything yourself. Absolute minimalism and specialization, a good choice for a vending machine or a restaurant's menu.
         Chromium OS - for people who don't want a computer, just Google Chrome
 
 
@@ -48,7 +49,7 @@ SuSE Linux - [Software- und System-Entwicklung (Software and Systems Development
     OpenSUSE Tumbleweed - rolling versions, but still stable. Can switch flavors easily!  OpenSUSE is meant for IT and productivity (comes with preinstallations)
 
 
-NixOS - supports a lot of packages. The Nix package manager is available for other distros.
+NixOS - supports a lot of packages, has a reproducible-build system - writing packages and upgrade in specs, and you can go to previous versions if something broke. The Nix package manager is available for other distros.
 
 
 Android
@@ -70,6 +71,7 @@ Linux From Scratch - a project that takes you through creation and customization
 OpenBSD isn't Linux, but it's still Unix-like. Entirely free and highly secure (network security).
 
 
+LatticeOS - I don't know which distro it forks from. Lightweight system with convenient docker-exported Restful APIs. Used in some drones.
 
 
 
@@ -108,12 +110,21 @@ Qt - a cross platform (for every common OS) GUI creator  [pronounced "cute"]
 X11 - a display server. Extremely common, very old, somewhat bloated.
 Wayland - a display server newer and lighter than X11. Many programs still don't support it. Accepts laptop trackpad gestures.
 
+
 File Managers:
 Nautilus - built on GNOME 2
 Nemo - A fork of Nautilus
 Caja - A fork of Nautilus
 Dolphin - built on KDE
-
+Terminal file managers:
+    Midnight Commander (mc) - the same kind of look and control you get in old BIOS menus
+    Ranger - vim-like, with file-preview functionality
+    Last Files (lf) - a mimic of Ranger with a few extra features; written in Go
+    CFiles Fast Terminal - similar to Ranger
+    Vi File Manager (vifm) - similar to Ranger, but with 2 panes like mc
+    Last File Manager (lfm) - like mc but more colorful; written in Python 3.4
+    Nnn - very fast and lightweight
+    TMux - session-based, with options to split into panes differently in each session
 
 
 
