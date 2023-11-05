@@ -100,17 +100,17 @@ Network: If installing regular edition windows, remove. will add back later (so 
 Install.
 If added virtIO disc already, install drivers from it (when you see no disk to install on, look for the Win10 compatibility driver within the VirtIO "CD-ROM")
     If not, shut down, load it, install the drivers
-        Later set Disk(XML):
-            in target set bus="virtio"
-            in address set type="pci"
 shut down
-
 
 If removed Network, add back
 
 Remove installation ISO, virtIO drivers
 
-Prepare for driver installation:
+Make sure the Disk has those configurations (XML):
+    in <target>, set bus="virtio"
+    in <address>, set type="pci"
+
+Prepare for debloat and gpu-driver installation:
     Boot VM
     If you want to debload your system, now's a good time.
         Recommended: https://github.com/Sycnex/Windows10Debloater . To use:
@@ -118,7 +118,9 @@ Prepare for driver installation:
             You won't be permitted to run scripts, so run: "Set-ExecutionPolicy RemoteSigned" (press y on prompt)
             run the github project's file GUI file: ".\Windows10DebloaterGUI.ps1" 
     download GPU drivers
-    shut down
+    
+    go through your Windows customization checklist (disable mouse acceleration, messages, sticky keys, set DNS, etc.)
+shut down
 
 
 
@@ -235,6 +237,8 @@ Change Video QXL to Model: None
     This way you'll only have 1 screen; the physical monitor you output image to (which is at a higher resolution)
 
 Add Keyboard and Mouse to the VM
+    note that if this isn't your first VM installation, you can setup evdev right now by copying over the <hostdev> tag (first line) and  <qemu:commandline> tags contents
+    if you setup evdev, don't pass keyboard and mouse.
 
 Boot the VM, Install the GPU drivers, Shut down
 
@@ -276,14 +280,14 @@ follow the instructions for your used version; https://looking-glass.io/docs/B6/
 
 In the VM: make sure secure-boot is disabled in VM
     go to Windows settings -> Recovery -> Advanced startup > Restart now
-    find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2
+    find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2 (if needed)
     in the grey-blue configurations screen, go to Device Manager > Secure Boot Configuration -> "Attempt Secure Boot" should be disabled
 Install looking-glass guest client in the VM: 
     get the windows client from the same version you took the host client: https://looking-glass.io/downloads
     get the driver (unnecessary for Looking-Glass B6 and onwards):  https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/upstream-virtio/
     install:
-        extract the client and (maybe, depending on version) driver
-        client: run the windows client exe as administrator to install it, make sure to create a shortcut
+        extract the client (and maybe driver, depending on version)
+        client: run the windows client exe as administrator to install it, make sure to create a shortcut during installation
             add the program's shortcut to startup folder: "$USER_HOME/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup" (you can find it through Run (Win+R): "shell:startup")
             After adding it, the program should be listed in Task Manager's startup tab
         driver: go to Device Manager > System devices -> PCI standard RAM Controller -> Update Driver -> Browse locally -> ( VirtIO -> Win10 -> amd64)
@@ -327,7 +331,7 @@ Extract, and run main script.
 Review the found hardware - don't include the unwanted (repeated or accidentally-plugged hardware)
 
 Paste the output into your VM's XML
-    Make sure to paste the 2 segments before applying, or the VM Manager might change the single-addition automatically.
+    Make sure to paste the 2 following parts BEFORE APPLYING, or the VM Manager might change the single-addition automatically.
         The first line (a specific domain tag) goes instead of the XML's first line
         The <qemu:commandline> tag section goes before the very end, above the </domain> tag
 
@@ -387,7 +391,7 @@ You can add scream to startup (do it once you confirm everything works)
 make sure secure-boot is disabled for guest VM
 
 Download (in VM) Scream for guest client (binaries zip):  https://github.com/duncanthrax/scream/releases
-    extract, and run "install" as administrator
+    extract, and run installer as administrator
 
 Pick (in guest VM) "Speakers (Scream (WDMI))" from the bottom-right sounds menu
 Go to Device Manager > "Sound, video and game controllers" and disable devices other than Scream
@@ -432,6 +436,11 @@ If you don't want the OS to know it's in a VM (might affect cheat-engines), you 
         <kvm>
           <hidden state='on'/>
         </kvm>
+    within the <os> section (between opening and closing tags): [IMPORTANT for bypassing Easy Anti Cheat!]
+        <smbios mode='host'/>
+    within the <cpu mode=....> section:
+        <feature policy='disable' name='hypervisor'/>
+    
     Be aware that CPU changes can brick the guest OS.
     If you changed it and it works, copy XML again
 
@@ -444,8 +453,11 @@ Untested: Mutahar demonstrated that these 4 lines inside <hyperv> tag can help b
     <frequencies state="on"/>
 And in the Windows VM, go to "Turn Windows features on or off", and enable HyperV (both Management Tools and Platform)
 
+You might also want to go into System within guest OS and change the computer's name. Anything except the default "DESKTOP-ASDF1234"
 
 
+
+Relevant info: a guide for setting up VRChat in VM: https://docs.vrchat.com/docs/using-vrchat-in-a-virtual-machine
 
 
 

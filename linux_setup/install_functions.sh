@@ -61,6 +61,7 @@ function install_targz_in_opt () {
 	exe_path="${install_dir_full}/${inner_executable}"
 	sudo chmod u+x "$exe_path"
 	ln -s "$exe_path" "$HOME/Desktop/$app_name"  # Create a desktop shortcut for PyCharm
+	# TODO: test:  ln -s "$exe_path" "/usr/local/bin/$app_name"
 	fi
 }
 

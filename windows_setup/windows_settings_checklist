@@ -9,7 +9,7 @@ Right-click > Personalize > Colors:
 Toolbar > View > Options > View
     Show hidden files
     uncheck: Hide extensions for known file types
-    uncheck: Hide extensions for known file types
+    uncheck: Hide folder merge conflicts
 
 Add to desktop:
     "This PC"
@@ -17,15 +17,16 @@ Add to desktop:
     New > Folder > name it: GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}
         The string before the ".{" doesn't matter much.
 
+Enable Developer Mode
+    and modify some things on that page
+
 Uninstall OneDrive
 
 Uninstall Xbox Game bullshits
 
-Uninstall anything else you don't need in control panel
+Uninstall anything else you don't need in Start Menu (Click the start button and uninstall everything you don't want)
 
 Disable anything possible in startup (CTRL+SHIFT+ESC for Task Manager -> Startup)
-
-Click the start button and uninstall everything possible
 
 Press SHIFT 5 times quick to trigger stickey keys message -> go disable them
 
@@ -46,7 +47,7 @@ disable mouse acceleration
 set OS's DNS to 1.1.1.1 
     How to do it: Control Panel > Network and Internet > Network and Sharing Center > Change adapter settings > (right-click the appropriate adapter) properties > (IPv4) Properties > Edit bottom 2 entries to 1.1.1.1 and 1.0.0.1 respectively
 
-set appropriate screens to their higher refresh-rate (example: 240Hz) if applicable
+set appropriate screens to their higher refresh-rate (example: 240Hz) and HDR if applicable
 
 enable performance mode in power settings
     How to do it: Control Panel > Hardware and Sound > Power Options > (Show additional plans > ) High performance
@@ -57,6 +58,8 @@ If you need to get rid of the "Activate Windows" watermark, run in Admin cmd:   
         find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2
         in the grey-blue configurations screen, go to Device Manager > Secure Boot Configuration -> "Attempt Secure Boot" should be disabled
 
-Pin important folders to Quick Access
+Pin important folders to Quick Access (specifically your User folder)
+
+
 
 

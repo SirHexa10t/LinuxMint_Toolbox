@@ -1,0 +1,28 @@
+Port: 1080
+
+Available hosts (communicate through SOCKS5):
+============================================
+amsterdam.nl.socks.nordhold.net
+atlanta.us.socks.nordhold.net
+dallas.us.socks.nordhold.net
+los-angeles.us.socks.nordhold.net
+nl.socks.nordhold.net
+se.socks.nordhold.net
+stockholm.se.socks.nordhold.net
+us.socks.nordhold.net
+
+
+
+HTTP proxies used to use port 89. But those have been removed...
+
+
+NordVPN API (no need to log-in for that):
+========================================
+# get list of available hosts  # get more info here:  https://blog.sleeplessbeastie.eu/2019/02/18/how-to-use-public-nordvpn-api/
+curl --silent "https://api.nordvpn.com/v1/servers?limit=16384" | jq --raw-output '.[].hostname' | sort --version-sort
+
+# get info of specific server
+curl --silent https://api.nordvpn.com/server | jq '.[] | select(.domain == "de80.nordvpn.com")'
+
+# find which server supports proxy:
+curl --silent https://api.nordvpn.com/server | jq '.[].features.proxy' | grep 'true'

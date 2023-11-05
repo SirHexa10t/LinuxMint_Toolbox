@@ -116,7 +116,7 @@ Nautilus - built on GNOME 2
 Nemo - A fork of Nautilus
 Caja - A fork of Nautilus
 Dolphin - built on KDE
-Terminal file managers:
+Terminal (tiling-ish) file managers:
     Midnight Commander (mc) - the same kind of look and control you get in old BIOS menus
     Ranger - vim-like, with file-preview functionality
     Last Files (lf) - a mimic of Ranger with a few extra features; written in Go
@@ -125,8 +125,8 @@ Terminal file managers:
     Last File Manager (lfm) - like mc but more colorful; written in Python 3.4
     Nnn - very fast and lightweight
     TMux - session-based, with options to split into panes differently in each session
-
-
+    Sway - i3 but meant to be used with Wayland
+    Hyperland - fast-moving Wayland tiling manager
 
 
 

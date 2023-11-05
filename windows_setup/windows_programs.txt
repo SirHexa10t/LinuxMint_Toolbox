@@ -53,10 +53,13 @@ VR Gaming
 ---------
 
 ALVR - PCVR connection ; replaces Oculus software
+    VRCable_Driver - driver for VR headset connection. ALVR's start-wizard directs you to it on its own 
 
 SideQuest - connect to Oculus device and offload programs (or generally manage it with any sent command)
 
 ModAssistant - mods manager for BeatSaber
+
+
 
 
 
