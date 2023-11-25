@@ -41,3 +41,8 @@ if get_approval "Would you like to install TimeShift (BTRFS snapshotting/"restor
     nix-env -iA nixpkgs.timeshift
 fi
 
+
+# example:
+# nix-env -i obs-studio
+
+

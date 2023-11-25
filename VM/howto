@@ -237,7 +237,7 @@ Change Video QXL to Model: None
     This way you'll only have 1 screen; the physical monitor you output image to (which is at a higher resolution)
 
 Add Keyboard and Mouse to the VM
-    note that if this isn't your first VM installation, you can setup evdev right now by copying over the <hostdev> tag (first line) and  <qemu:commandline> tags contents
+    note that if this isn't your first VM installation, you can setup evdev right now by copying over the <hostdev> tag (first line), and  <qemu:commandline> tags contents
     if you setup evdev, don't pass keyboard and mouse.
 
 Boot the VM, Install the GPU drivers, Shut down
@@ -427,7 +427,7 @@ Save the VM's XML
 Make Network a virtio model
 
 If you don't want the OS to know it's in a VM (might affect cheat-engines), you need to apply these XML changes:
-    below </features>:   
+    below </features> (replace current cpu tagging):   
         <cpu mode='host-model' check='partial'>
           <model fallback='allow'/>
           <feature policy='disable' name='hypervisor'/>
@@ -438,8 +438,6 @@ If you don't want the OS to know it's in a VM (might affect cheat-engines), you 
         </kvm>
     within the <os> section (between opening and closing tags): [IMPORTANT for bypassing Easy Anti Cheat!]
         <smbios mode='host'/>
-    within the <cpu mode=....> section:
-        <feature policy='disable' name='hypervisor'/>
     
     Be aware that CPU changes can brick the guest OS.
     If you changed it and it works, copy XML again

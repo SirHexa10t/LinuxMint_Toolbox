@@ -38,6 +38,13 @@ sudo apt install btop -y
 # like nano but better. If you're not restricted to the terminal (and the data isn't, such as results from "man"), just use Xed.
 # sudo apt install micro -y 
 
+# Nemo add image-resize/rotate to right-click menu
+sudo apt install nemo-image-converter -y
+
+# Nemo add checksum to right-click menu
+sudo apt install nemo-gtkhash -y
+
+
 # manage gpg keyrings
 sudo apt install dirmngr
 

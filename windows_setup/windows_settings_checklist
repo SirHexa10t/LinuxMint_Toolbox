@@ -1,6 +1,6 @@
 De-bloating your OS prior to the following steps could save you a few unnecessary actions.
 
-unpin/hide/turn-off everything unnecessary at the taskbar
+unpin/hide/turn-off everything unnecessary at the taskbar and start-menu
 
 Right-click > Personalize > Colors:
     Choose your color: Dark
@@ -17,6 +17,19 @@ Add to desktop:
     New > Folder > name it: GodMode.{ED7BA470-8E54-465E-825C-99712043E01C}
         The string before the ".{" doesn't matter much.
 
+Unpin items you don't want in Quick Access (if any)
+
+Pin important folders to Quick Access. Specifically:
+    C:\
+    [root of external drives, if any]
+    your User folder
+    Steam save locations:
+        Steam user data ("C:\Program Files (x86)\Steam\userdata\[some-number]")
+        AppData ("C:\[user]\AppData")
+        Documents ("C:\[user]\Documents")  <- should already be pinned, move it around it you want
+        ProgramData ("C:\ProgramData")
+    
+
 Enable Developer Mode
     and modify some things on that page
 
@@ -24,11 +37,10 @@ Uninstall OneDrive
 
 Uninstall Xbox Game bullshits
 
-Uninstall anything else you don't need in Start Menu (Click the start button and uninstall everything you don't want)
-
 Disable anything possible in startup (CTRL+SHIFT+ESC for Task Manager -> Startup)
 
 Press SHIFT 5 times quick to trigger stickey keys message -> go disable them
+
 
 Install Brave browser
     set it as default
@@ -39,7 +51,9 @@ Install Brave browser
 
 Go to settings > privacy -> go over all permissions and lock out / disable / minimalize everything you don't want or need
 
-For a VM, disable everything in Windows Security (Virus & Thread protection)
+If in a VM:
+    disable everything in Windows Security (Virus & Thread protection)
+    Change computer name; it's picked by some CheatEngines (just look for "name" in Start menu. You'll get "View your PC name" - go there and choose "Rename your PC". Name it anything, just not "DESKTOP-[random]")
 
 disable mouse acceleration 
     How to do it: go to Mouse Properties (usually through "Additional mouse options" in other Mouse menus) > Pointer Options > uncheck "Enhance pointer precision", Apply
@@ -58,7 +72,7 @@ If you need to get rid of the "Activate Windows" watermark, run in Admin cmd:   
         find the option to modify UEFI (Troubleshoot > Advanced options > UEFI Firmware Settings), then on restart press F10/F2
         in the grey-blue configurations screen, go to Device Manager > Secure Boot Configuration -> "Attempt Secure Boot" should be disabled
 
-Pin important folders to Quick Access (specifically your User folder)
+
 
 
 
