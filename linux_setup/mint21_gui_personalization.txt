@@ -1,6 +1,7 @@
 You might have trouble installing on the first try because of failed bootloader write, trying again solves it
 	I don't know if it's relevant, but 2nd time I tried, I marked the volume I wanted to install into (it had a checkbox))
 
+
 Audio
 =====
 Lower sound from 100% to 30%
@@ -221,10 +222,6 @@ go over programs in X/programs_and_images  and see that no type of program is mi
 
 Unresolved: noises before startup (from DAC?), when the logo just appears  - probably from DAC, maybe JDS's drivers would solve that
 
-Unresolved: reading "SMART" microsoft (collection of) disks
-Reading NTFS Dynamic disks: (source: https://askubuntu.com/questions/869770/how-to-mount-dynamic-disks-partition-on-ubuntu )
-$ sudo apt-get install ldmtool
-
 Unresolved: install programs like in old OSs, install basic stuff like image-viewer, go over scripts in X
 
 Unresolved: make the OS open txt file in editor, not ask if it needs to run
@@ -237,40 +234,9 @@ Not sure: update and upgrade everything
 
 
 
-# TODO - move this somewhere else ?
 
 
-Process Manager:
-    System Monitor
-    htop
-Resource Management
-    Disks [gnome-disks ?]
-Editor / viewer:
-    OnlyOffice (Microsoft Office documents)
-    Document Viewer (documents, including PDF)
-    Visual Studio Code (Text Editor)
-    Sublime Text (Text Editor)
-    Xed (Text Editor)
-Browser:
-    Brave
-    LibreWolf
-Media Player:
-    celluloid [formerly mpv] (videos)
 
-
-# TODO - move this somewhere else
-
-Print hardware specs:
-    sudo lshw
-Temperatures print:
-    watch -n 2 sensors     (terminal CPU self updating report (every 2 seconds)
-    watch -n 2 nvidia-smi     (terminal GPU self updating report (every 2 seconds)
-
-
-disks_info
-compute_info
-list_programs
-list_commands
 
 
 

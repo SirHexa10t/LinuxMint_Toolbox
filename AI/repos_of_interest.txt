@@ -1,0 +1,59 @@
+AI repositories/community
+https://huggingface.co/
+
+
+Image mixing
+https://huggingface.co/spaces/AP123/IllusionDiffusion
+
+
+
+GUI editor
+    "nowadays all the models and stuff can be accessed in the app itself"
+https://github.com/comfyanonymous/ComfyUI
+https://github.com/ltdrdata/ComfyUI-Manager
+
+
+Together is re-training the base LLaMA model from scratch, in order to license it open source
+https://www.together.xyz/blog/redpajama
+
+
+
+OCR
+https://github.com/tesseract-ocr/tesseract
+
+
+
+Image captioning (describing what's in the image)
+BLIP
+
+
+
+AI QR code generator tutorial
+https://www.youtube.com/watch?v=Y1rYTnupZk4
+
+
+
+Chatting AI
+https://github.com/LAION-AI/Open-Assistant
+
+
+
+
+
+https://github.com/KoboldAI/KoboldAI-Client
+
+
+
+https://github.com/oobabooga/text-generation-webui
+https://vast.ai/docs/guides/oobabooga
+
+
+
+identifying things in image
+http://dev.kanotype.net:8003/deepdanbooru/
+
+
+
+
+
+

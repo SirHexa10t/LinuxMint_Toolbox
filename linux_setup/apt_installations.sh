@@ -70,6 +70,10 @@ sudo apt-get install dconf-editor
 # GitKraken (Graphical Git manager)
 install_deb_from_url "https://release.gitkraken.com/linux/gitkraken-amd64.deb"
 
+# Github Desktop (Graphical Git manager)
+# sudo wget "https://github.com/shiftkey/desktop/releases/download/release-3.3.3-linux2/GitHubDesktop-linux-amd64-3.3.3-linux2.deb"
+# sudo gdebi "GitHubDesktop-linux-amd64-3.3.3-linux2.deb"
+
 # man-like package, explains packages shortly (example: tldr ls)
 sudo apt install tldr -y
 tldr -u  # update manuals
@@ -96,7 +100,8 @@ sudo apt install oneko -y # run "oneko" to have a kitten chase your mouse around
 
 #################################################################################### Runtimes and SDKs
 # Java Development Kit
-sudo apt install openjdk-19-jdk -y
+# sudo apt install openjdk-19-jdk -y  # old
+sudo apt install openjdk-21-jdk -y
 end_messages+=("Installed java, run 'java --version' to check that it's the right version")
 
 # should already have a recent version of python (run "python3 --version" if you're unsure for some reason)
