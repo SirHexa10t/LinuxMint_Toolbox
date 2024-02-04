@@ -82,8 +82,7 @@ Go to System Settings >
     Hardware > Keyboard > Shortcuts
         > System > Lock screen -> Set CTRL+ESC instead of CTRL+ALT+L (which is PyCharm's "sort this page" shortcut)
         > Launchers > Launch terminal > Add Super+Return (Super=Windows-key, Return=Enter)
-        > Launchers > Home folder > Set Super+H instead of Shper+E (Super=Windows-key)
-        > Windows > Close window > Add Ctrl+W
+        > Launchers > Home folder > Set Super+H instead of Super+E (Super=Windows-key)
 
     Hardware > Keyboard > Layouts -> add your extra languages
         -> Options... > Switching to another layout -> choose a keyboard shortcut (maybe ALT+SHIFT for consistency with Windows)
