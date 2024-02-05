@@ -106,10 +106,16 @@ Set Xed (text editor) to use a different theme, because its .sh editor is barely
         Download/save-to-xml a darcula coloring scheme (can be found here for example): https://gist.github.com/natanfelles/ae1a176a92c6a2404518498c77c48696
         In Xed, go to Edit > Preferences > Theme -> '+' button -> (browse for the darcula file)
         Still in the themes menu, choose the Darcula one, see how it changes your files' look.
+    Other than theme, go to Edit > Preferences:
+        Enable both Highlighting options: "Highlighting the current line" and "Highlighting matching brackets"
+        If you want to use Xed as an editor you could enable "Display line numbers", "Display overview map" and "Automatic indentation".
     
 Template: Add a new shell file option to right-click:
     bs="$HOME/Templates/bash_script.sh"
     touch "$bs" && chmod ug+x "$bs" && printf '#!/bin/bash\n\n' > "$bs"
+Template: Add a new python file option to right-click:
+    ps="$HOME/Templates/python_script.py"
+    touch "$ps" && chmod ug+x "$ps" && printf '#!/usr/bin/python3\n\n' > "$ps"
 Template: Add a new text file (non-executable) option to right-click:
     pt="$HOME/Templates/plain_text.txt"
     touch "$pt" && chmod 664 "$pt"
@@ -185,8 +191,6 @@ Enable starting a terminal at current window (works for nemo file manager):
 update the /etc/bash.bashrc file with own baschrc definitions (or reference)
 
 
-The GUI in 'System Settings > Hardware > Disks' is neat. Remember to use it in the future if you need device-id or status.
-
 
 
 
@@ -229,7 +233,7 @@ Unresolved: make the OS open txt file in editor, not ask if it needs to run
 
 Not sure: update and upgrade everything
 
-# Careful, this'll take a while
+
 
 
 
