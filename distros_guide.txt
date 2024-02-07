@@ -29,9 +29,9 @@ Red Hat - stable; business-oriented
 
 
 Arch - custom-tailored, meant to be personally-configured ; runs specifically on your hardware (marginally faster than other distros). Updates often, known to be less stable
-    EndeavourOS - possibly the best Arch distro, according to someone on youtube
+    EndeavourOS - possibly the best Arch distro, according to someone on youtube. It's close to vanilla-Arch, with some slight tweaks.
     Garuda - use-friendly and polished with pre-selected programs and features
-    Manjaro - (was) relatively-convenient Arch; it detects your hardware and installs the necessary drivers for you. But they're not updating their certificates properly, and replaced open-source software with proprietary, and used alpha/beta version of apps as "stable". And some packages on AUR break Manjaro due to versioning.
+    Manjaro - (was) relatively-convenient Arch; it detects your hardware and installs the necessary drivers for you. But they're not updating their certificates properly, and replaced open-source software with proprietary, and used alpha/beta version of apps as "stable". And some packages on AUR break Manjaro due to versioning. The focus is higher on stability (over bleeding-edge) than other Arch OSs, but that's probably your focus if you go for Arch.
     Arco Linux - similar to Manjaro?
         Big Linux - has a lot of convenient GUI configurations, and an easy way to switch the Desktop Environment
     SteamOS 3 - Steam Deck's OS, used for gaming, runs with KDE Plasma 5 and has a Windows-compatibility layer

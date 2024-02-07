@@ -11,15 +11,49 @@ APT: Used by Debian-based systems
 
 Yum/DNF: Used by Fedora and CentOS
 
+AUR: Used by Arch
+    Usually non-official packages, added-in by individuals
+    Doesn't host actual packages, but rather package-builds (scripts that download, compile, and install the packages)
+    You can end up with mismatched versions of libraries that don't communicate right with each-other or with the apps
+
 Pacman: Used by Arch Linux
 
-Snaps: Universal, sandboxed, self-contained dependencies. Owned by canonical (Ubuntu's owners). The attempt to make them Universal (solving the package-creators' problem of compiling many versions) comes at the cost of being typically slow in runtime. 
+Snaps:
+    Universal, sandboxed, self-contained dependencies.
+        Containerized: snaps are saved in their own filesystem in /snap/ as mounted disk-drives (you can view them by running `lsblk`)
+    Owned by canonical (Ubuntu's owners).
+    The attempt to make them Universal (solving the package-creators' problem of compiling many versions) comes at the cost of being typically slow in runtime.
+    Automatically updating when an update is available
+    Matching themes are only supported by some snaps
 
-Nix: Universal, but mainly meant for NixOS. Might give you trouble if you intend to run your packages outside your terminal
+Nix:
+    Universal, but mainly meant for NixOS.
+    Might give you trouble if you intend to run your packages outside your terminal
 
-Flatpak: Universal, sandboxed, self-contained dependencies. Common dependencies are shared within Flatpak's environment. Can use various package repositories; notably: FlatHub, GNOME Software, KDE Store, LibreOffice Flatpak
+Flatpak:
+    Universal, sandboxed, self-contained dependencies.
+        Ubuntu specifically rejects Flatpaks; they're promoting Snaps (Canonical's own product)
+    Installed as regular user, no need for admin privileges!
+    Permissions per app can be managed in sandbox (install Flatseal: com.github.tchx84.Flatseal)
+    Common dependencies are shared within Flatpak's environment, and no forced sharing of the same (runtime) package-version across apps
+        Of-course that means Flatpack packages take more space
+    Can use various package repositories; notably: FlatHub, GNOME Software, KDE Store, LibreOffice Flatpak.
+    Only meant for graphical applications
+        Due to the standalone-nature of flatpaks, you may have theming mismatches across some applications
+    Not perfectly sandboxed, but still more secure than using .deb/.rpm packages
 
-AppImage: Universal, sandboxed, Self-contained. Every package is a single independent executable file. The entire file is replaced in an update, and there's no sharing of dependencies.
+AppImage:
+    Universal, sometimes-sandboxed, Self-contained.
+    Every package is a single independent executable file that includes everything it needs
+    No sharing of dependencies
+    There's no central management for packages.
+        The entire file needs to be replaced in an update
+    Uses the most space out of all formats
 
+
+
+Files installed via package managers:
+    .deb packages are for debian systems
+    .rpm packages are for Red Hat distros (including Fedora), and OpenSUSE. Maybe some others too.
 
 

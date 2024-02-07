@@ -82,6 +82,10 @@ tldr -u  # update manuals
 sudo apt install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
+# TODO - flatpak command - doesn't belong here
+# permissions management for flatpaks
+# flatpak install flathub com.github.tchx84.Flatseal
+
 # TODO - remove?
 # Connect via SMB (for NAS usage)
 sudo apt-get install cifs-utils -y
