@@ -8,10 +8,22 @@ Make sure in BIOS that:         [can be automated to a few commands and an if st
     IOMMU (CPU) is enabled    (you can check later with:  dmesg | grep AMD-Vi ) ( you can list IOMMU devices with this command:    for a in /sys/kernel/iommu_groups/*; do find $a -type l; done   )
     NX (CPU) is enabled
     SVM (CPU) is enabled
+    
+    
+Run checks:
+lsmod | grep kvm  # see that KVM is running
+    kvm-ok  # can also run this
+cat /proc/cmdline  # see that the IOMMU settings in grub got integrated
+    dmesg | grep AMD-Vi  # print IOMMUs
+lspci -knn | grep VGA -A 3  # see that you're using nvidia drivers and not nouveau
+    or:  lspci -knn | grep NVIDIA -A 3
+
 
 Edit grub:  sudo nano /etc/default/grub
-    set either (both work, the latter lets you see the bootloader's logs when starting)
+    set either this (get the GPU's pci ids with command:  lspci -nnk )
         GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt iommu=1 kvm.ignore_msrs=1 vfio-pci.ids=10de:2204,10de:1aef"
+    you can add more parameters:    
+        GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt iommu=1 kvm.ignore_msrs=1 transparent_hugepage=never rd.driver.pre=vfio-pci vfio-pci.ids=10de:2204,10de:1aef pcie_acs_override=downstream,multifunction" 
     or
         GRUB_CMDLINE_LINUX_DEFAULT="amd_iommu=on iommu=pt"
     run "sudo update-grub" to apply the changes
@@ -24,6 +36,9 @@ install Libvirt and qemu:
 reboot
 
 
+TODO - list changes for `sudo update-initramfs -u`
+
+
 added drivers to RAM-FS using dracut:  (if you want to know how bootloaders work:   https://www.youtube.com/watch?v=3OdlPmPbLII&t=270s )
     sudo apt install dracut -y
     sudo mkdir -p /etc/dracut.conf.d/
@@ -33,11 +48,6 @@ added drivers to RAM-FS using dracut:  (if you want to know how bootloaders work
     sudo dracut -f --kver `uname -r`
 reboot
 
-
-Run checks:
-lsmod | grep kvm  # see that KVM is running
-cat /proc/cmdline  # see that the IOMMU settings in grub got integrated
-lspci -nnk  # see that you're using nvidia drivers and not nouveau
 
 
 # Installing dracut may or may not automatically set-up the following. At least check to make sure:
@@ -243,6 +253,12 @@ Add Keyboard and Mouse to the VM
 Boot the VM, Install the GPU drivers, Shut down
 
 
+# Alternative GPU passthrough/blacklisting reference guides:
+# ----------------------------------------------------------
+https://dividebyzer0.gitlab.io/GPUpassthrough.html
+https://mathiashueber.com/pci-passthrough-ubuntu-2004-virtual-machine/
+https://www.heiko-sieger.info/blacklisting-graphics-driver/
+
 
 # Installing looking-glass:
 # -------------------------
@@ -392,6 +408,7 @@ make sure secure-boot is disabled for guest VM
 
 Download (in VM) Scream for guest client (binaries zip):  https://github.com/duncanthrax/scream/releases
     extract, and run installer as administrator
+        If you get devcon-x64 failure, open CMD as admin and run: `bcdedit /set TESTSIGNING ON`, then restart and try again.
 
 Pick (in guest VM) "Speakers (Scream (WDMI))" from the bottom-right sounds menu
 Go to Device Manager > "Sound, video and game controllers" and disable devices other than Scream
@@ -401,7 +418,9 @@ If you can't hear, try modifying registry:
 in guest-VM, run regedit, go to Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Scream
     Add Key (folder) called "Options"
     Within the new folder:
-        add new String called "UnicastIPv4", give it the host address
+        add new String called "UnicastIPv4", give it the network bridging address, i.e. virbr0's
+            in guest CMD, run `ipconfig` and copy the value of "Default Gateway". Should be like: 192.168.XXX.XXX
+            in host, run `ip addr` and see that virbr0 has the exact same address
         add new DWORD-32-bit called "UnicastPort" and set it to 4011 Decimal
 Restart guest and check audio again
 
@@ -411,8 +430,9 @@ Consider changing sample rate in Sound, for different sound-quality and strain o
         One of the VMs had noises while set on 32 bit 48k, it was solved when I changed it to 96k. Then on another run it had noises again, which stopped when set back to 32bit 48k.
 
 
-reference: https://www.youtube.com/watch?v=AfUgNEOx3uk
-
+reference: 
+    https://www.youtube.com/watch?v=AfUgNEOx3uk
+    https://www.youtube.com/watch?v=jMHjVoRMG4A
 
 
 
